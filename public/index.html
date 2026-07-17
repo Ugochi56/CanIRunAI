@@ -2039,11 +2039,9 @@
       if (!systemInfo) return { status: 'unknown', reason: 'Hardware not detected' };
 
       const totalRAM = systemInfo.memory.totalGB;
-      const availRAM = systemInfo.memory.availableGB;
       const vram = systemInfo.bestGpu?.vramGB || 0;
       const gpuName = systemInfo.bestGpu?.model || 'None';
       
-      // Apple Silicon Detection
       const isMac = systemInfo.os.platform === 'darwin';
       const isAppleSilicon = isMac && (
         systemInfo.cpu.brand.toLowerCase().includes('apple') ||
@@ -2051,28 +2049,24 @@
         /m\d/i.test(systemInfo.cpu.brand)
       );
 
-      // On Apple Silicon, graphics memory is Unified. Ollama / Metal uses up to ~66% of System RAM as VRAM.
       const appleUnifiedVRAM = isAppleSilicon ? +(totalRAM * 0.66).toFixed(1) : 0;
       const effectiveVRAM = isAppleSilicon ? appleUnifiedVRAM : vram;
       
       const isNvidiaGpu = gpuName.toLowerCase().includes('nvidia') || gpuName.toLowerCase().includes('geforce') || gpuName.toLowerCase().includes('rtx') || gpuName.toLowerCase().includes('gtx');
-      const effectiveRAM = vram > 2 ? totalRAM + vram * 0.7 : totalRAM;
-
       const isVideoOrImage = model.tags.includes('video') || model.tags.includes('image');
 
-      // ── CPU-Only models: only check RAM ──
       if (model.cpuOnly) {
-        const needed = model.ramGB;
-        if (needed <= totalRAM * 0.7) {
-          return { status: 'can-run', label: 'Can Run', reason: `CPU mode · Needs ~${needed} GB RAM · You have ${totalRAM} GB — no GPU required!` };
-        } else if (needed <= totalRAM * 0.95) {
-          return { status: 'maybe', label: 'Tight Fit', reason: `CPU mode · Needs ~${needed} GB RAM · Close to your ${totalRAM} GB limit` };
+        const quantMult = QUANT_MULTIPLIERS[currentQuant] || 1.0;
+        const needed = +(model.ramGB * quantMult).toFixed(1);
+        if (needed <= totalRAM * 0.55) {
+          return { status: 'can-run', label: 'Can Run', reason: `CPU mode · Needs ~${needed} GB RAM (${currentQuant}) · You have ${totalRAM} GB — no GPU required!` };
+        } else if (needed <= totalRAM * 0.85) {
+          return { status: 'maybe', label: 'Tight Fit', reason: `CPU mode · Needs ~${needed} GB RAM (${currentQuant}) · Close to your ${totalRAM} GB limit` };
         } else {
-          return { status: 'cannot-run', label: 'Low RAM', reason: `CPU mode · Needs ~${needed} GB RAM · You only have ${totalRAM} GB` };
+          return { status: 'cannot-run', label: 'Low RAM', reason: `CPU mode · Needs ~${needed} GB RAM (${currentQuant}) · You only have ${totalRAM} GB` };
         }
       }
 
-      // ── Video/Image gen models: VRAM is the critical resource ──
       if (isVideoOrImage && model.vramGB) {
         const neededVRAM = model.vramGB;
         const neededRAM = model.ramGB;
@@ -2098,26 +2092,24 @@
         }
       }
 
-      // ── LLM models: RAM/VRAM is the critical resource ──
       const quantMult = QUANT_MULTIPLIERS[currentQuant] || 1.0;
       const needed = +(model.ramGB * quantMult).toFixed(1);
 
       if (isAppleSilicon) {
-        // Apple Silicon unified memory check
-        if (needed <= totalRAM * 0.75) {
+        if (needed <= totalRAM * 0.55) {
           return { status: 'can-run', label: 'Can Run', reason: `Fits in Apple Silicon Unified Memory (~${needed} GB needed at ${currentQuant}, ${totalRAM} GB system RAM)` };
-        } else if (needed <= totalRAM * 0.9) {
+        } else if (needed <= totalRAM * 0.85) {
           return { status: 'maybe', label: 'Tight Fit', reason: `Needs ~${needed} GB (${currentQuant}) · Close to your ${totalRAM} GB Unified Memory limit — may swap to disk` };
         } else {
           return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB (${currentQuant}) · Exceeds your ${totalRAM} GB Unified Memory limit` };
         }
       }
 
-      if (needed <= totalRAM * 0.7) {
+      if (needed <= totalRAM * 0.55) {
         return { status: 'can-run', label: 'Can Run', reason: `Needs ~${needed} GB (${currentQuant}) · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
-      } else if (needed <= totalRAM * 0.95) {
+      } else if (needed <= totalRAM * 0.85) {
         return { status: 'maybe', label: 'Tight Fit', reason: `Needs ~${needed} GB (${currentQuant}) · Close to your ${totalRAM} GB limit — may be slow` };
-      } else if (needed <= effectiveRAM) {
+      } else if (needed <= totalRAM + (vram * 0.7)) {
         return { status: 'maybe', label: 'GPU Assist', reason: `Needs ~${needed} GB (${currentQuant}) · May fit with GPU offloading (${vram} GB VRAM)` };
       } else {
         return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB (${currentQuant}) · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
