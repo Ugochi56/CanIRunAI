@@ -2168,11 +2168,30 @@
       });
 
       if (filtered.length === 0) {
+        const queryDisplay = searchTerm ? `"${escapeHtml(searchTerm)}"` : 'your search';
         grid.innerHTML = `
-          <div class="empty-state" style="grid-column:1/-1;">
-            <div class="icon">🔍</div>
-            <h4>No models match your filters</h4>
-            <p>Try a different search term or filter.</p>
+          <div class="empty-state" style="grid-column:1/-1;max-width:540px;margin:24px auto;padding:28px 24px;background:var(--bg-card);border:1px solid var(--border-hover);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);">
+            <div class="icon" style="font-size:36px;margin-bottom:10px;">🔎</div>
+            <h4 style="font-size:17px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">
+              We don't have ${queryDisplay} in our library yet!
+            </h4>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.5;">
+              We update our model specs database weekly. Submit your requested model below and we will add it soon!
+            </p>
+
+            <form onsubmit="submitModelRequest(event, '${escapeHtml(searchTerm)}')" style="display:flex;flex-direction:column;gap:12px;text-align:left;">
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);display:block;margin-bottom:4px;">Model Name</label>
+                <input type="text" class="form-input-text" id="req-model-name" value="${escapeHtml(searchTerm)}" placeholder="e.g. DeepSeek-Coder-V3, Flux-Schnell" required />
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);display:block;margin-bottom:4px;">Your Email (to notify you when added)</label>
+                <input type="email" class="form-input-text" id="req-user-email" placeholder="you@example.com" required />
+              </div>
+              <button type="submit" id="btn-req-submit" class="btn-pull primary" style="justify-content:center;padding:12px;font-weight:700;margin-top:4px;">
+                🚀 Request This Model
+              </button>
+            </form>
           </div>`;
         return;
       }
@@ -2911,6 +2930,57 @@
         btn.innerHTML = originalBtnText;
         btn.disabled = false;
       }
+    }
+
+    // ── Missing Model Request Handler ─────────────────────────────
+    async function submitModelRequest(e, defaultTerm) {
+      e.preventDefault();
+      const modelInput = document.getElementById('req-model-name');
+      const emailInput = document.getElementById('req-user-email');
+      const btn = document.getElementById('btn-req-submit');
+
+      const modelName = modelInput?.value?.trim() || defaultTerm;
+      const userEmail = emailInput?.value?.trim();
+
+      if (!modelName || !userEmail) {
+        showToast('Please enter the model name and your email', 'error');
+        return;
+      }
+
+      const origText = btn.innerHTML;
+      btn.innerHTML = '⏳ Submitting Request…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('https://formsubmit.co/ajax/tdevguy@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            _subject: `CanIRunAI Model Request: ${modelName}`,
+            requested_model: modelName,
+            user_email: userEmail,
+            _replyto: userEmail,
+            message: `User requested adding model: "${modelName}" to CanIRunAI library.`
+          })
+        });
+
+        if (res.ok) {
+          showToast(`✅ Request sent for "${modelName}"! We'll notify you when added.`, 'success');
+          btn.innerHTML = '✅ Request Submitted!';
+          btn.style.background = 'var(--accent-green)';
+        } else {
+          throw new Error('Submit error');
+        }
+      } catch (err) {
+        console.warn('Model request error:', err);
+        window.open(`mailto:tdevguy@gmail.com?subject=CanIRunAI%20Model%20Request:%20${encodeURIComponent(modelName)}&body=Please%20add%20${encodeURIComponent(modelName)}%20to%20CanIRunAI!`, '_blank');
+        showToast('Opened email client to send request!', 'info');
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
     function showToast(message, type = 'info') {
       const container = document.getElementById('toast-container');
