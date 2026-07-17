@@ -1,0 +1,14 @@
+{
+  "name": "canirunai",
+  "version": "1.0.0",
+  "description": "Match your specs to the perfect LLM — check which AI models your hardware can run locally",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "systeminformation": "^5.23.0"
+  }
+}
