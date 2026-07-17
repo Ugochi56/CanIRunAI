@@ -1366,65 +1366,135 @@
 
   <!-- Manual Specs Modal -->
   <div class="modal-overlay" id="spec-modal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width:640px;">
       <div class="modal-header-row">
         <h3>⚙ Customize Hardware Specs</h3>
         <button class="modal-close-btn" onclick="closeSpecModal()">✕</button>
       </div>
       <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;">
-        Select your system components manually to simulate how different hardware performs.
+        Configure your exact system hardware or simulate custom rigs to test LLM compatibility.
       </p>
       <form onsubmit="saveSpecForm(event)">
-        <div class="form-group">
-          <label class="form-label">System Memory (RAM)</label>
-          <select class="form-select" id="input-ram">
-            <option value="4">4 GB RAM</option>
-            <option value="8">8 GB RAM</option>
-            <option value="16" selected>16 GB RAM</option>
-            <option value="24">24 GB RAM</option>
-            <option value="32">32 GB RAM</option>
-            <option value="48">48 GB RAM</option>
-            <option value="64">64 GB RAM</option>
-            <option value="96">96 GB RAM</option>
-            <option value="128">128 GB RAM</option>
-            <option value="256">256 GB RAM</option>
-          </select>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="form-group">
+            <label class="form-label">System Memory (RAM)</label>
+            <select class="form-select" id="input-ram" onchange="syncCustomRam()">
+              <option value="4">4 GB RAM</option>
+              <option value="8">8 GB RAM</option>
+              <option value="12">12 GB RAM</option>
+              <option value="16" selected>16 GB RAM</option>
+              <option value="24">24 GB RAM</option>
+              <option value="32">32 GB RAM</option>
+              <option value="48">48 GB RAM</option>
+              <option value="64">64 GB RAM</option>
+              <option value="96">96 GB RAM</option>
+              <option value="128">128 GB RAM</option>
+              <option value="192">192 GB RAM</option>
+              <option value="256">256 GB RAM</option>
+              <option value="512">512 GB RAM</option>
+              <option value="custom">Custom RAM Amount…</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Custom RAM (GB)</label>
+            <input type="number" step="0.5" min="1" max="2048" class="form-input-text" id="input-custom-ram" placeholder="e.g. 16" value="16" />
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">GPU Model & VRAM</label>
-          <select class="form-select" id="input-gpu">
-            <option value="integrated:0">Integrated / None (0 GB VRAM)</option>
-            <option value="nvidia:4">GTX 1650 / RTX 3050 (4 GB VRAM)</option>
-            <option value="nvidia:6">RTX 2060 / RTX 3050 6GB (6 GB VRAM)</option>
-            <option value="nvidia:8">RTX 3060 8GB / RTX 4060 (8 GB VRAM)</option>
-            <option value="nvidia:12" selected>RTX 3060 12GB / RTX 4070 (12 GB VRAM)</option>
-            <option value="nvidia:16">RTX 3080 / RTX 4070 Ti (16 GB VRAM)</option>
-            <option value="nvidia:24">RTX 3090 / RTX 4090 (24 GB VRAM)</option>
-            <option value="apple:apple">Apple Silicon M-Series (Unified Memory)</option>
+          <label class="form-label">Graphics Card (GPU Preset)</label>
+          <select class="form-select" id="input-gpu" onchange="onGpuSelectChange()">
+            <optgroup label="── NVIDIA GeForce (Consumer) ──">
+              <option value="nvidia:4:NVIDIA GeForce GTX 1650 / RTX 3050 (4 GB)">GTX 1650 / RTX 3050 (4 GB VRAM)</option>
+              <option value="nvidia:6:NVIDIA GeForce RTX 2060 / 3050 6GB (6 GB)">RTX 2060 / 3050 6GB / 4050 Mobile (6 GB VRAM)</option>
+              <option value="nvidia:8:NVIDIA GeForce RTX 3060 8GB / RTX 4060 (8 GB)">RTX 3060 8GB / RTX 4060 / 4070 Laptop (8 GB VRAM)</option>
+              <option value="nvidia:12:NVIDIA GeForce RTX 3060 12GB / RTX 4070 (12 GB)" selected>RTX 3060 12GB / RTX 4070 / 4070 Super (12 GB VRAM)</option>
+              <option value="nvidia:16:NVIDIA GeForce RTX 3080 / 4070 Ti Super (16 GB)">RTX 3080 / RTX 4070 Ti Super / 4080 (16 GB VRAM)</option>
+              <option value="nvidia:24:NVIDIA GeForce RTX 3090 / RTX 4090 (24 GB)">RTX 3090 / RTX 3090 Ti / RTX 4090 (24 GB VRAM)</option>
+            </optgroup>
+
+            <optgroup label="── AMD Radeon ──">
+              <option value="amd:8:AMD Radeon RX 580 / RX 6600 (8 GB)">RX 580 / RX 6600 / RX 7600 (8 GB VRAM)</option>
+              <option value="amd:12:AMD Radeon RX 6700 XT / RX 7700 XT (12 GB)">RX 6700 XT / RX 7700 XT (12 GB VRAM)</option>
+              <option value="amd:16:AMD Radeon RX 6800 XT / RX 7800 XT (16 GB)">RX 6800 XT / RX 7800 XT / RX 7900 GRE (16 GB VRAM)</option>
+              <option value="amd:20:AMD Radeon RX 7900 XT (20 GB)">RX 7900 XT (20 GB VRAM)</option>
+              <option value="amd:24:AMD Radeon RX 7900 XTX (24 GB)">RX 7900 XTX (24 GB VRAM)</option>
+            </optgroup>
+
+            <optgroup label="── Intel Arc ──">
+              <option value="intel:8:Intel Arc A580 / A750 (8 GB)">Intel Arc A580 / A750 (8 GB VRAM)</option>
+              <option value="intel:16:Intel Arc A770 (16 GB)">Intel Arc A770 (16 GB VRAM)</option>
+            </optgroup>
+
+            <optgroup label="── Apple Silicon (Unified Memory) ──">
+              <option value="apple:apple:Apple Silicon M-Series (Unified Memory)">Apple Silicon M1 / M2 / M3 / M4 (Unified RAM as VRAM)</option>
+            </optgroup>
+
+            <optgroup label="── Enterprise & Multi-GPU ──">
+              <option value="nvidia:16:NVIDIA Tesla V100 / RTX A4500 (16 GB)">NVIDIA Tesla V100 / RTX A4500 (16 GB VRAM)</option>
+              <option value="nvidia:24:NVIDIA RTX A5000 / A30 (24 GB)">NVIDIA RTX A5000 / A30 (24 GB VRAM)</option>
+              <option value="nvidia:40:NVIDIA A100 40GB (40 GB)">NVIDIA A100 40GB (40 GB VRAM)</option>
+              <option value="nvidia:48:NVIDIA RTX 6000 Ada / Dual RTX 3090 (48 GB)">NVIDIA RTX 6000 Ada / Dual RTX 3090 (48 GB VRAM)</option>
+              <option value="nvidia:80:NVIDIA A100 / H100 80GB (80 GB)">NVIDIA A100 / H100 SXM 80GB (80 GB VRAM)</option>
+              <option value="nvidia:96:Dual NVIDIA RTX 6000 Ada (96 GB)">Dual RTX 6000 Ada (96 GB VRAM)</option>
+            </optgroup>
+
+            <optgroup label="── Integrated / Custom ──">
+              <option value="integrated:0:Integrated Graphics (0 GB VRAM)">Integrated Graphics / CPU Only (0 GB VRAM)</option>
+              <option value="custom:custom:Custom GPU">Custom / Manual VRAM Input</option>
+            </optgroup>
           </select>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Processor Type</label>
-          <select class="form-select" id="input-cpu">
-            <option value="Intel Core i7 / AMD Ryzen 7" selected>Intel Core i7 / AMD Ryzen 7 (8-Core)</option>
-            <option value="Intel Core i5 / AMD Ryzen 5">Intel Core i5 / AMD Ryzen 5 (6-Core)</option>
-            <option value="Intel Core i9 / AMD Ryzen 9">Intel Core i9 / AMD Ryzen 9 (16-Core)</option>
-            <option value="Apple Silicon M1/M2/M3/M4">Apple Silicon M-Series</option>
-          </select>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="form-group">
+            <label class="form-label">Dedicated VRAM (GB)</label>
+            <input type="number" step="0.5" min="0" max="1024" class="form-input-text" id="input-vram" placeholder="e.g. 12" value="12" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Operating System</label>
+            <select class="form-select" id="input-os">
+              <option value="win32:Windows 11" selected>Windows 11 / 10</option>
+              <option value="darwin:macOS (Apple Silicon)">macOS (Apple Silicon)</option>
+              <option value="darwin:macOS (Intel)">macOS (Intel)</option>
+              <option value="linux:Linux (Ubuntu/Debian/Arch)">Linux</option>
+            </select>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Operating System</label>
-          <select class="form-select" id="input-os">
-            <option value="win32:Windows 11" selected>Windows 11 / 10</option>
-            <option value="darwin:macOS">macOS</option>
-            <option value="linux:Linux">Linux</option>
-          </select>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="form-group">
+            <label class="form-label">Processor Brand</label>
+            <select class="form-select" id="input-cpu">
+              <option value="Intel Core i7 / Core Ultra 7" selected>Intel Core i7 / Core Ultra 7</option>
+              <option value="Intel Core i5 / Core Ultra 5">Intel Core i5 / Core Ultra 5</option>
+              <option value="Intel Core i9 / Core Ultra 9">Intel Core i9 / Core Ultra 9</option>
+              <option value="AMD Ryzen 7">AMD Ryzen 7</option>
+              <option value="AMD Ryzen 5">AMD Ryzen 5</option>
+              <option value="AMD Ryzen 9 / Threadripper">AMD Ryzen 9 / Threadripper</option>
+              <option value="Apple Silicon M1/M2/M3/M4">Apple Silicon M-Series</option>
+              <option value="Intel Xeon / AMD EPYC Server">Intel Xeon / AMD EPYC Server</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">CPU Cores</label>
+            <select class="form-select" id="input-cpu-cores">
+              <option value="4">4 Cores</option>
+              <option value="6">6 Cores</option>
+              <option value="8" selected>8 Cores</option>
+              <option value="12">12 Cores</option>
+              <option value="16">16 Cores</option>
+              <option value="24">24 Cores</option>
+              <option value="32">32 Cores</option>
+              <option value="64">64 Cores</option>
+            </select>
+          </div>
         </div>
 
-        <button type="submit" class="btn-modal-action btn-pull primary">Save & Update Specs</button>
+        <button type="submit" class="btn-modal-action btn-pull primary">Save & Apply Specs</button>
       </form>
     </div>
   </div>
@@ -2366,7 +2436,23 @@
 
       if (systemInfo) {
         const ramSelect = document.getElementById('input-ram');
-        if (ramSelect) ramSelect.value = systemInfo.memory.totalGB.toString();
+        const customRamInput = document.getElementById('input-custom-ram');
+        const vramInput = document.getElementById('input-vram');
+
+        if (ramSelect && customRamInput) {
+          const currentRam = systemInfo.memory.totalGB.toString();
+          const optionExists = Array.from(ramSelect.options).some(o => o.value === currentRam);
+          if (optionExists) {
+            ramSelect.value = currentRam;
+          } else {
+            ramSelect.value = 'custom';
+          }
+          customRamInput.value = systemInfo.memory.totalGB;
+        }
+
+        if (vramInput && systemInfo.bestGpu) {
+          vramInput.value = systemInfo.bestGpu.vramGB;
+        }
       }
     }
 
@@ -2374,30 +2460,66 @@
       document.getElementById('spec-modal')?.classList.remove('active');
     }
 
+    function syncCustomRam() {
+      const select = document.getElementById('input-ram');
+      const customInput = document.getElementById('input-custom-ram');
+      if (!select || !customInput) return;
+      if (select.value !== 'custom') {
+        customInput.value = select.value;
+      }
+    }
+
+    function onGpuSelectChange() {
+      const gpuSelect = document.getElementById('input-gpu');
+      const vramInput = document.getElementById('input-vram');
+      const ramSelect = document.getElementById('input-ram');
+      const customRamInput = document.getElementById('input-custom-ram');
+      if (!gpuSelect || !vramInput) return;
+
+      const val = gpuSelect.value;
+      if (val.startsWith('apple')) {
+        const activeRam = parseFloat(customRamInput?.value || ramSelect?.value || 16);
+        vramInput.value = (activeRam * 0.66).toFixed(1);
+      } else if (val.includes(':')) {
+        const parts = val.split(':');
+        const vram = parseFloat(parts[1]);
+        if (!isNaN(vram)) {
+          vramInput.value = vram;
+        }
+      }
+    }
+
     function saveSpecForm(e) {
       e.preventDefault();
-      const ram = parseInt(document.getElementById('input-ram').value, 10);
-      const gpuVal = document.getElementById('input-gpu').value;
-      const cpuVal = document.getElementById('input-cpu').value;
+      const ramSelectVal = document.getElementById('input-ram').value;
+      const customRamVal = parseFloat(document.getElementById('input-custom-ram').value);
+      const ram = (ramSelectVal === 'custom' || !isNaN(customRamVal)) ? customRamVal : parseFloat(ramSelectVal);
+
+      const gpuSelectVal = document.getElementById('input-gpu').value;
+      const customVramVal = parseFloat(document.getElementById('input-vram').value);
+
+      const cpuBrandVal = document.getElementById('input-cpu').value;
+      const cpuCoresVal = parseInt(document.getElementById('input-cpu-cores').value, 10) || 8;
       const osVal = document.getElementById('input-os').value;
 
       const [osPlatform, osDistro] = osVal.split(':');
-      const isApple = gpuVal.startsWith('apple') || cpuVal.includes('Apple');
+      const isApple = gpuSelectVal.startsWith('apple') || cpuBrandVal.includes('Apple');
 
-      let gpuModel = 'Integrated Graphics';
-      let vramGB = 0;
+      let gpuModel = 'Graphics Processor';
+      let vramGB = !isNaN(customVramVal) ? customVramVal : 0;
 
-      if (gpuVal.startsWith('nvidia')) {
-        vramGB = parseInt(gpuVal.split(':')[1], 10);
-        gpuModel = `NVIDIA GeForce (${vramGB} GB VRAM)`;
+      if (gpuSelectVal.includes(':') && gpuSelectVal.split(':').length >= 3) {
+        gpuModel = gpuSelectVal.split(':')[2];
       } else if (isApple) {
         gpuModel = 'Apple Silicon Unified Memory';
-        vramGB = +(ram * 0.66).toFixed(1);
+        if (isNaN(customVramVal) || customVramVal === 0) vramGB = +(ram * 0.66).toFixed(1);
+      } else {
+        gpuModel = `Dedicated GPU (${vramGB} GB VRAM)`;
       }
 
       systemInfo = {
-        os: { platform: osPlatform, distro: osDistro, release: 'Release', arch: 'x64' },
-        cpu: { brand: cpuVal, cores: 8, physicalCores: 8, speed: 3.2, speedMax: 4.5, manufacturer: isApple ? 'Apple' : 'Intel' },
+        os: { platform: osPlatform, distro: osDistro || 'Desktop OS', release: 'Release', arch: 'x64' },
+        cpu: { brand: cpuBrandVal, cores: cpuCoresVal, physicalCores: Math.max(1, Math.floor(cpuCoresVal / 2)), speed: 3.4, speedMax: 4.8, manufacturer: isApple ? 'Apple' : 'Intel/AMD' },
         memory: {
           total: ram * 1073741824,
           free: (ram * 0.4) * 1073741824,
@@ -2406,7 +2528,7 @@
           totalGB: ram,
           availableGB: +(ram * 0.6).toFixed(1)
         },
-        gpus: [{ model: gpuModel, vendor: isApple ? 'Apple' : 'NVIDIA', vram: vramGB * 1024 }],
+        gpus: [{ model: gpuModel, vendor: isApple ? 'Apple' : gpuSelectVal.startsWith('amd') ? 'AMD' : 'NVIDIA', vram: vramGB * 1024 }],
         bestGpu: { model: gpuModel, vramMB: vramGB * 1024, vramGB: vramGB },
         storage: [],
         isManual: true
@@ -2416,7 +2538,7 @@
       renderSpecs();
       renderModels();
       closeSpecModal();
-      showToast('Specs updated successfully!', 'success');
+      showToast('Hardware configuration applied!', 'success');
     }
 
     // ── Share Card Generator ──────────────────────────────────────
