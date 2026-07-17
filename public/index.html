@@ -1586,12 +1586,70 @@
       isManual: true
     };
 
+    function detectBrowserSpecs() {
+      let gpuName = 'Graphics Processor';
+      let vramGB = 8;
+      let isNvidia = false;
+      let isApple = false;
+
+      try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (gl) {
+          const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+          if (debugInfo) {
+            const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            if (renderer) gpuName = renderer;
+          }
+        }
+      } catch (e) {}
+
+      gpuName = gpuName.replace(/ANGLE \((.*?), (.*?), (.*?)\)/i, '$2 ($3)').replace(/Direct3D\d+ vs_\d+_\d+ ps_\d+_\d+/i, '').trim();
+
+      const deviceRam = navigator.deviceMemory || 16;
+      const userAgent = navigator.userAgent || '';
+      const platform = navigator.platform || '';
+      const isMac = platform.toLowerCase().includes('mac') || userAgent.includes('Macintosh');
+      const isWin = platform.toLowerCase().includes('win') || userAgent.includes('Windows');
+
+      if (gpuName.toLowerCase().includes('apple') || isMac) {
+        isApple = true;
+        gpuName = 'Apple Silicon Unified Memory';
+        vramGB = +(deviceRam * 0.66).toFixed(1);
+      } else if (gpuName.toLowerCase().includes('nvidia') || gpuName.toLowerCase().includes('geforce') || gpuName.toLowerCase().includes('rtx')) {
+        isNvidia = true;
+        if (gpuName.includes('3060') || gpuName.includes('4070')) vramGB = 12;
+        else if (gpuName.includes('3080') || gpuName.includes('4070 Ti')) vramGB = 16;
+        else if (gpuName.includes('3090') || gpuName.includes('4090')) vramGB = 24;
+        else if (gpuName.includes('3050') || gpuName.includes('1650')) vramGB = 4;
+        else vramGB = 8;
+      }
+
+      return {
+        os: { platform: isMac ? 'darwin' : isWin ? 'win32' : 'linux', distro: isMac ? 'macOS' : isWin ? 'Windows' : 'Linux', release: 'Browser', arch: 'x64' },
+        cpu: { brand: isApple ? 'Apple Silicon' : 'Processor (Browser Auto-Detected)', cores: navigator.hardwareConcurrency || 8, physicalCores: (navigator.hardwareConcurrency || 8) / 2, speed: 3.2, speedMax: 4.5, manufacturer: isApple ? 'Apple' : 'Intel/AMD' },
+        memory: {
+          total: deviceRam * 1073741824,
+          free: (deviceRam * 0.4) * 1073741824,
+          available: (deviceRam * 0.6) * 1073741824,
+          used: (deviceRam * 0.4) * 1073741824,
+          totalGB: deviceRam,
+          availableGB: +(deviceRam * 0.6).toFixed(1)
+        },
+        gpus: [{ model: gpuName, vendor: isApple ? 'Apple' : isNvidia ? 'NVIDIA' : 'Generic', vram: vramGB * 1024 }],
+        bestGpu: { model: gpuName, vramMB: vramGB * 1024, vramGB: vramGB },
+        storage: [],
+        isManual: true,
+        isBrowserDetected: true
+      };
+    }
+
     function loadSavedManualSpecs() {
       try {
         const saved = localStorage.getItem('canirunai_manual_specs');
         if (saved) return JSON.parse(saved);
       } catch (e) {}
-      return DEFAULT_MANUAL_SPECS;
+      return detectBrowserSpecs();
     }
 
     function saveManualSpecs(specs) {
@@ -1625,7 +1683,7 @@
         systemInfo.isManual = false;
         renderSpecs();
       } catch (e) {
-        console.log('Using manual specs mode (hosted or server off)');
+        console.log('Using browser auto-detect & manual specs mode');
         systemInfo = loadSavedManualSpecs();
         renderSpecs();
       }
