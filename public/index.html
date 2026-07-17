@@ -1061,6 +1061,178 @@
       color: var(--text-primary);
       transform: translateY(-1px);
     }
+
+    /* ── Quantization Controls ─────────────────────────────── */
+    .quant-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      background: var(--bg-card);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .quant-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-right: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quant-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quant-btn:hover {
+      border-color: var(--accent-purple);
+      color: var(--text-primary);
+    }
+
+    .quant-btn.active {
+      background: var(--accent-purple-dim);
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+      box-shadow: 0 0 10px rgba(167, 139, 250, 0.2);
+    }
+
+    /* ── Modals & Dialogs ───────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(0,0,0,0.6);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .modal-header-row h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-surface);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-select, .form-input-text {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-select:focus, .form-input-text:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .btn-modal-action {
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.25s;
+    }
+
+    .manual-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: var(--accent-yellow-dim);
+      color: var(--accent-yellow);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body>
@@ -1100,6 +1272,9 @@
       <div class="section-header">
         <h3>⚙ Your Hardware</h3>
         <div class="line"></div>
+        <button class="btn-refresh" id="btn-edit-specs" onclick="openSpecModal()">
+          ✏️ Edit Specs
+        </button>
       </div>
       <div class="specs-grid" id="specs-grid">
         <div class="loading-state">
@@ -1134,6 +1309,12 @@
       </div>
     </div>
 
+    <div style="text-align:center;margin:-16px 0 32px;display:none;" id="share-button-container">
+      <button class="btn-pull primary" onclick="openShareModal()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;font-size:14px;border-radius:100px;margin:0 auto;box-shadow:var(--shadow-glow-blue);">
+        📸 Share My Results Card
+      </button>
+    </div>
+
     <!-- Filters -->
     <section class="fade-in" id="filters-section" style="display:none;">
       <!-- Ollama Helper Banner (Only when Ollama is offline) -->
@@ -1148,6 +1329,14 @@
       <div class="section-header">
         <h3>🧠 Model Library</h3>
         <div class="line"></div>
+      </div>
+
+      <div class="quant-bar">
+        <span class="quant-title">⚖ Quantization Precision:</span>
+        <button class="quant-btn active" data-quant="Q4" onclick="setQuant('Q4', this)">Q4 (Standard 4-bit)</button>
+        <button class="quant-btn" data-quant="Q5" onclick="setQuant('Q5', this)">Q5 (+25% RAM)</button>
+        <button class="quant-btn" data-quant="Q8" onclick="setQuant('Q8', this)">Q8 (+65% RAM)</button>
+        <button class="quant-btn" data-quant="FP16" onclick="setQuant('FP16', this)">FP16 (Unquantized)</button>
       </div>
       <div class="filter-bar">
         <input type="text" class="search-input" id="search-input" placeholder="Search models…" />
@@ -1169,6 +1358,88 @@
 
     <!-- Toast -->
     <div class="toast-container" id="toast-container"></div>
+  </div>
+
+  <!-- Manual Specs Modal -->
+  <div class="modal-overlay" id="spec-modal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <h3>⚙ Customize Hardware Specs</h3>
+        <button class="modal-close-btn" onclick="closeSpecModal()">✕</button>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;">
+        Select your system components manually to simulate how different hardware performs.
+      </p>
+      <form onsubmit="saveSpecForm(event)">
+        <div class="form-group">
+          <label class="form-label">System Memory (RAM)</label>
+          <select class="form-select" id="input-ram">
+            <option value="4">4 GB RAM</option>
+            <option value="8">8 GB RAM</option>
+            <option value="16" selected>16 GB RAM</option>
+            <option value="24">24 GB RAM</option>
+            <option value="32">32 GB RAM</option>
+            <option value="48">48 GB RAM</option>
+            <option value="64">64 GB RAM</option>
+            <option value="96">96 GB RAM</option>
+            <option value="128">128 GB RAM</option>
+            <option value="256">256 GB RAM</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">GPU Model & VRAM</label>
+          <select class="form-select" id="input-gpu">
+            <option value="integrated:0">Integrated / None (0 GB VRAM)</option>
+            <option value="nvidia:4">GTX 1650 / RTX 3050 (4 GB VRAM)</option>
+            <option value="nvidia:6">RTX 2060 / RTX 3050 6GB (6 GB VRAM)</option>
+            <option value="nvidia:8">RTX 3060 8GB / RTX 4060 (8 GB VRAM)</option>
+            <option value="nvidia:12" selected>RTX 3060 12GB / RTX 4070 (12 GB VRAM)</option>
+            <option value="nvidia:16">RTX 3080 / RTX 4070 Ti (16 GB VRAM)</option>
+            <option value="nvidia:24">RTX 3090 / RTX 4090 (24 GB VRAM)</option>
+            <option value="apple:apple">Apple Silicon M-Series (Unified Memory)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Processor Type</label>
+          <select class="form-select" id="input-cpu">
+            <option value="Intel Core i7 / AMD Ryzen 7" selected>Intel Core i7 / AMD Ryzen 7 (8-Core)</option>
+            <option value="Intel Core i5 / AMD Ryzen 5">Intel Core i5 / AMD Ryzen 5 (6-Core)</option>
+            <option value="Intel Core i9 / AMD Ryzen 9">Intel Core i9 / AMD Ryzen 9 (16-Core)</option>
+            <option value="Apple Silicon M1/M2/M3/M4">Apple Silicon M-Series</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Operating System</label>
+          <select class="form-select" id="input-os">
+            <option value="win32:Windows 11" selected>Windows 11 / 10</option>
+            <option value="darwin:macOS">macOS</option>
+            <option value="linux:Linux">Linux</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-modal-action btn-pull primary">Save & Update Specs</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Share Results Modal -->
+  <div class="modal-overlay" id="share-modal">
+    <div class="modal-card" style="max-width:680px;text-align:center;">
+      <div class="modal-header-row">
+        <h3>📸 Your Compatibility Card</h3>
+        <button class="modal-close-btn" onclick="closeShareModal()">✕</button>
+      </div>
+      <div id="share-canvas-container" style="margin-bottom:20px;display:flex;justify-content:center;">
+        <canvas id="share-canvas" width="1200" height="630" style="width:100%;max-width:580px;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow-md);"></canvas>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn-pull primary" onclick="downloadShareCard()" style="flex:1;">📥 Download Image</button>
+        <button class="btn-copy" onclick="copyShareCard()" style="flex:1;justify-content:center;padding:12px;">📋 Copy Image</button>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -1296,6 +1567,45 @@
     let installedModels = new Set();
     let runningModels = new Set();
     let currentFilter = 'all';
+    let currentQuant = 'Q4';
+
+    const QUANT_MULTIPLIERS = {
+      'Q4': 1.0,
+      'Q5': 1.25,
+      'Q8': 1.65,
+      'FP16': 3.1
+    };
+
+    const DEFAULT_MANUAL_SPECS = {
+      os: { platform: 'win32', distro: 'Windows 11', release: '23H2', arch: 'x64' },
+      cpu: { brand: 'Intel Core i7-12700K', cores: 12, physicalCores: 8, speed: 3.6, speedMax: 5.0, manufacturer: 'Intel' },
+      memory: { total: 17179869184, free: 8589934592, available: 10737418240, used: 6442450944, totalGB: 16, availableGB: 10 },
+      gpus: [{ model: 'NVIDIA GeForce RTX 3060', vendor: 'NVIDIA', vram: 12288 }],
+      bestGpu: { model: 'NVIDIA GeForce RTX 3060', vramMB: 12288, vramGB: 12 },
+      storage: [],
+      isManual: true
+    };
+
+    function loadSavedManualSpecs() {
+      try {
+        const saved = localStorage.getItem('canirunai_manual_specs');
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+      return DEFAULT_MANUAL_SPECS;
+    }
+
+    function saveManualSpecs(specs) {
+      try {
+        localStorage.setItem('canirunai_manual_specs', JSON.stringify(specs));
+      } catch (e) {}
+    }
+
+    function setQuant(quant, btn) {
+      currentQuant = quant;
+      document.querySelectorAll('.quant-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderModels();
+    }
 
     // ── Init ──────────────────────────────────────────────────────
     async function init() {
@@ -1310,15 +1620,14 @@
     async function loadSystemInfo() {
       try {
         const res = await fetch('/api/system');
+        if (!res.ok) throw new Error('System API unavailable');
         systemInfo = await res.json();
+        systemInfo.isManual = false;
         renderSpecs();
       } catch (e) {
-        document.getElementById('specs-grid').innerHTML = `
-          <div class="empty-state">
-            <div class="icon">⚠️</div>
-            <h4>Could not detect hardware</h4>
-            <p>${e.message}</p>
-          </div>`;
+        console.log('Using manual specs mode (hosted or server off)');
+        systemInfo = loadSavedManualSpecs();
+        renderSpecs();
       }
     }
 
@@ -1390,7 +1699,7 @@
         gpuHTML = `
           <div class="spec-card gpu">
             <div class="spec-icon">🎮</div>
-            <div class="spec-label">GPU</div>
+            <div class="spec-label">GPU ${s.isManual ? '<span class="manual-mode-badge">Custom</span>' : ''}</div>
             <div class="spec-value">${s.bestGpu.model}</div>
             <div class="spec-detail">VRAM: ${s.bestGpu.vramGB} GB</div>
           </div>`;
@@ -1398,7 +1707,7 @@
         gpuHTML = `
           <div class="spec-card gpu">
             <div class="spec-icon">🖥️</div>
-            <div class="spec-label">GPU</div>
+            <div class="spec-label">GPU ${s.isManual ? '<span class="manual-mode-badge">Custom</span>' : ''}</div>
             <div class="spec-value">${s.gpus[0].model}</div>
             <div class="spec-detail">Integrated — CPU inference only</div>
           </div>`;
@@ -1407,13 +1716,13 @@
       document.getElementById('specs-grid').innerHTML = `
         <div class="spec-card cpu">
           <div class="spec-icon">⚡</div>
-          <div class="spec-label">Processor</div>
+          <div class="spec-label">Processor ${s.isManual ? '<span class="manual-mode-badge">Custom</span>' : ''}</div>
           <div class="spec-value">${s.cpu.brand}</div>
           <div class="spec-detail">${s.cpu.physicalCores}C / ${s.cpu.cores}T · ${s.cpu.speedMax || s.cpu.speed} GHz</div>
         </div>
         <div class="spec-card ram">
           <div class="spec-icon">🧩</div>
-          <div class="spec-label">System RAM</div>
+          <div class="spec-label">System RAM ${s.isManual ? '<span class="manual-mode-badge">Custom</span>' : ''}</div>
           <div class="spec-value">${s.memory.totalGB} GB</div>
           <div class="spec-detail">${s.memory.availableGB} GB available right now</div>
           <div class="ram-bar-container">
@@ -1424,7 +1733,7 @@
         ${gpuHTML}
         <div class="spec-card os">
           <div class="spec-icon">💻</div>
-          <div class="spec-label">Operating System</div>
+          <div class="spec-label">Operating System ${s.isManual ? '<span class="manual-mode-badge">Custom</span>' : ''}</div>
           <div class="spec-value">${s.os.distro}</div>
           <div class="spec-detail">${s.os.arch} · ${s.os.release}</div>
         </div>
@@ -1526,27 +1835,28 @@
       }
 
       // ── LLM models: RAM/VRAM is the critical resource ──
-      const needed = model.ramGB;
+      const quantMult = QUANT_MULTIPLIERS[currentQuant] || 1.0;
+      const needed = +(model.ramGB * quantMult).toFixed(1);
 
       if (isAppleSilicon) {
         // Apple Silicon unified memory check
         if (needed <= totalRAM * 0.75) {
-          return { status: 'can-run', label: 'Can Run', reason: `Fits in Apple Silicon Unified Memory (~${needed} GB needed, ${totalRAM} GB system RAM)` };
+          return { status: 'can-run', label: 'Can Run', reason: `Fits in Apple Silicon Unified Memory (~${needed} GB needed at ${currentQuant}, ${totalRAM} GB system RAM)` };
         } else if (needed <= totalRAM * 0.9) {
-          return { status: 'maybe', label: 'Tight Fit', reason: `Needs ~${needed} GB · Close to your ${totalRAM} GB Unified Memory limit — may swap to disk` };
+          return { status: 'maybe', label: 'Tight Fit', reason: `Needs ~${needed} GB (${currentQuant}) · Close to your ${totalRAM} GB Unified Memory limit — may swap to disk` };
         } else {
-          return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB · Exceeds your ${totalRAM} GB Unified Memory limit` };
+          return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB (${currentQuant}) · Exceeds your ${totalRAM} GB Unified Memory limit` };
         }
       }
 
       if (needed <= totalRAM * 0.7) {
-        return { status: 'can-run', label: 'Can Run', reason: `Needs ~${needed} GB · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
+        return { status: 'can-run', label: 'Can Run', reason: `Needs ~${needed} GB (${currentQuant}) · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
       } else if (needed <= totalRAM * 0.95) {
-        return { status: 'maybe', label: 'Tight Fit', reason: `Needs ~${needed} GB · Close to your ${totalRAM} GB limit — may be slow` };
+        return { status: 'maybe', label: 'Tight Fit', reason: `Needs ~${needed} GB (${currentQuant}) · Close to your ${totalRAM} GB limit — may be slow` };
       } else if (needed <= effectiveRAM) {
-        return { status: 'maybe', label: 'GPU Assist', reason: `Needs ~${needed} GB · May fit with GPU offloading (${vram} GB VRAM)` };
+        return { status: 'maybe', label: 'GPU Assist', reason: `Needs ~${needed} GB (${currentQuant}) · May fit with GPU offloading (${vram} GB VRAM)` };
       } else {
-        return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
+        return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB (${currentQuant}) · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
       }
     }
 
@@ -1559,6 +1869,8 @@
 
       filtersSection.style.display = 'block';
       summaryBar.style.display = 'grid';
+      const shareContainer = document.getElementById('share-button-container');
+      if (shareContainer) shareContainer.style.display = 'block';
 
       let counts = { 'can-run': 0, 'maybe': 0, 'cannot-run': 0 };
       const searchTerm = searchInput.value.toLowerCase().trim();
@@ -1663,8 +1975,8 @@
             </div>`
           : `<div class="model-specs">
               <div class="model-spec-item">
-                <div class="label">RAM</div>
-                <div class="value" style="color:${barPct <= 70 ? 'var(--accent-green)' : barPct <= 95 ? 'var(--accent-yellow)' : 'var(--accent-red)'}">${model.ramGB} GB</div>
+                <div class="label">RAM (${currentQuant})</div>
+                <div class="value" style="color:${barPct <= 70 ? 'var(--accent-green)' : barPct <= 95 ? 'var(--accent-yellow)' : 'var(--accent-red)'}">${(model.ramGB * (QUANT_MULTIPLIERS[currentQuant] || 1.0)).toFixed(1)} GB</div>
               </div>
               <div class="model-spec-item">
                 <div class="label">📥 Download</div>
@@ -1981,6 +2293,233 @@
     function copyCmd(text) {
       navigator.clipboard.writeText(text).then(() => {
         showToast(`Copied: ${text}`, 'success');
+      });
+    }
+
+    // ── Spec Modal Handlers ───────────────────────────────────────
+    function openSpecModal() {
+      const modal = document.getElementById('spec-modal');
+      if (!modal) return;
+      modal.classList.add('active');
+
+      if (systemInfo) {
+        const ramSelect = document.getElementById('input-ram');
+        if (ramSelect) ramSelect.value = systemInfo.memory.totalGB.toString();
+      }
+    }
+
+    function closeSpecModal() {
+      document.getElementById('spec-modal')?.classList.remove('active');
+    }
+
+    function saveSpecForm(e) {
+      e.preventDefault();
+      const ram = parseInt(document.getElementById('input-ram').value, 10);
+      const gpuVal = document.getElementById('input-gpu').value;
+      const cpuVal = document.getElementById('input-cpu').value;
+      const osVal = document.getElementById('input-os').value;
+
+      const [osPlatform, osDistro] = osVal.split(':');
+      const isApple = gpuVal.startsWith('apple') || cpuVal.includes('Apple');
+
+      let gpuModel = 'Integrated Graphics';
+      let vramGB = 0;
+
+      if (gpuVal.startsWith('nvidia')) {
+        vramGB = parseInt(gpuVal.split(':')[1], 10);
+        gpuModel = `NVIDIA GeForce (${vramGB} GB VRAM)`;
+      } else if (isApple) {
+        gpuModel = 'Apple Silicon Unified Memory';
+        vramGB = +(ram * 0.66).toFixed(1);
+      }
+
+      systemInfo = {
+        os: { platform: osPlatform, distro: osDistro, release: 'Release', arch: 'x64' },
+        cpu: { brand: cpuVal, cores: 8, physicalCores: 8, speed: 3.2, speedMax: 4.5, manufacturer: isApple ? 'Apple' : 'Intel' },
+        memory: {
+          total: ram * 1073741824,
+          free: (ram * 0.4) * 1073741824,
+          available: (ram * 0.6) * 1073741824,
+          used: (ram * 0.4) * 1073741824,
+          totalGB: ram,
+          availableGB: +(ram * 0.6).toFixed(1)
+        },
+        gpus: [{ model: gpuModel, vendor: isApple ? 'Apple' : 'NVIDIA', vram: vramGB * 1024 }],
+        bestGpu: { model: gpuModel, vramMB: vramGB * 1024, vramGB: vramGB },
+        storage: [],
+        isManual: true
+      };
+
+      saveManualSpecs(systemInfo);
+      renderSpecs();
+      renderModels();
+      closeSpecModal();
+      showToast('Specs updated successfully!', 'success');
+    }
+
+    // ── Share Card Generator ──────────────────────────────────────
+    function openShareModal() {
+      const modal = document.getElementById('share-modal');
+      if (!modal) return;
+      modal.classList.add('active');
+      renderShareCardCanvas();
+    }
+
+    function closeShareModal() {
+      document.getElementById('share-modal')?.classList.remove('active');
+    }
+
+    function renderShareCardCanvas() {
+      const canvas = document.getElementById('share-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      // Card Dimensions
+      const width = 1200;
+      const height = 630;
+
+      // Dark Theme Background Gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+      bgGrad.addColorStop(0, '#0a0a0f');
+      bgGrad.addColorStop(0.5, '#11111a');
+      bgGrad.addColorStop(1, '#161625');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Ambient Glow Spheres
+      const glow1 = ctx.createRadialGradient(200, 150, 0, 200, 150, 400);
+      glow1.addColorStop(0, 'rgba(102, 126, 234, 0.15)');
+      glow1.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, width, height);
+
+      const glow2 = ctx.createRadialGradient(1000, 480, 0, 1000, 480, 400);
+      glow2.addColorStop(0, 'rgba(52, 211, 153, 0.12)');
+      glow2.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow2;
+      ctx.fillRect(0, 0, width, height);
+
+      // Outer Border
+      ctx.strokeStyle = '#2a2a3a';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(20, 20, width - 40, height - 40);
+
+      // Header Branding
+      ctx.font = '900 48px Inter, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('🚀 CanIRunAI', 60, 95);
+
+      ctx.font = '600 20px Inter, sans-serif';
+      ctx.fillStyle = '#a78bfa';
+      ctx.fillText('HARDWARE LLM COMPATIBILITY REPORT', 60, 132);
+
+      // Hardware Specs Box
+      ctx.fillStyle = '#16161f';
+      ctx.strokeStyle = '#2a2a3a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(60, 170, width - 120, 130, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '600 16px Inter, sans-serif';
+      ctx.fillStyle = '#686880';
+      ctx.fillText('YOUR HARDWARE CONFIGURATION', 90, 205);
+
+      const cpuBrand = systemInfo?.cpu?.brand || 'CPU';
+      const ramGB = systemInfo?.memory?.totalGB || 16;
+      const gpuName = systemInfo?.bestGpu?.model || 'Integrated GPU';
+      const vramGB = systemInfo?.bestGpu?.vramGB || 0;
+
+      ctx.font = '700 22px JetBrains Mono, sans-serif';
+      ctx.fillStyle = '#e8e8f0';
+      ctx.fillText(`⚡ ${cpuBrand.substring(0, 32)}`, 90, 245);
+      ctx.fillText(`🧩 ${ramGB} GB RAM   🎮 ${gpuName.substring(0, 28)} (${vramGB} GB VRAM)`, 90, 280);
+
+      // Stat Counters
+      const countCan = document.getElementById('count-can-run')?.textContent || '0';
+      const countMaybe = document.getElementById('count-maybe')?.textContent || '0';
+      const countCannot = document.getElementById('count-cannot')?.textContent || '0';
+
+      const statY = 330;
+      const statW = 340;
+      const statH = 160;
+
+      // Stat 1: Can Run
+      ctx.fillStyle = '#16161f';
+      ctx.strokeStyle = '#34d39940';
+      ctx.beginPath();
+      ctx.roundRect(60, statY, statW, statH, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '900 64px Inter, sans-serif';
+      ctx.fillStyle = '#34d399';
+      ctx.fillText(countCan, 90, statY + 80);
+      ctx.font = '700 16px Inter, sans-serif';
+      ctx.fillStyle = '#9898b0';
+      ctx.fillText('CAN RUN SMOOTHLY', 90, statY + 122);
+
+      // Stat 2: Tight Fit
+      ctx.strokeStyle = '#fbbf2440';
+      ctx.beginPath();
+      ctx.roundRect(430, statY, statW, statH, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '900 64px Inter, sans-serif';
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillText(countMaybe, 460, statY + 80);
+      ctx.font = '700 16px Inter, sans-serif';
+      ctx.fillStyle = '#9898b0';
+      ctx.fillText('MIGHT BE SLOW', 460, statY + 122);
+
+      // Stat 3: Too Heavy
+      ctx.strokeStyle = '#f8717140';
+      ctx.beginPath();
+      ctx.roundRect(800, statY, statW, statH, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '900 64px Inter, sans-serif';
+      ctx.fillStyle = '#f87171';
+      ctx.fillText(countCannot, 830, statY + 80);
+      ctx.font = '700 16px Inter, sans-serif';
+      ctx.fillStyle = '#9898b0';
+      ctx.fillText('TOO HEAVY', 830, statY + 122);
+
+      // Footer bar
+      ctx.font = '600 18px Inter, sans-serif';
+      ctx.fillStyle = '#60a5fa';
+      ctx.fillText(`Quantization Precision: ${currentQuant}`, 60, 560);
+
+      ctx.font = '700 20px JetBrains Mono, sans-serif';
+      ctx.fillStyle = '#e8e8f0';
+      ctx.textAlign = 'right';
+      ctx.fillText('https://canirunai.com', width - 60, 560);
+      ctx.textAlign = 'left';
+    }
+
+    function downloadShareCard() {
+      const canvas = document.getElementById('share-canvas');
+      if (!canvas) return;
+      const link = document.createElement('a');
+      link.download = 'canirunai-results.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('Image downloaded!', 'success');
+    }
+
+    function copyShareCard() {
+      const canvas = document.getElementById('share-canvas');
+      if (!canvas) return;
+      canvas.toBlob(blob => {
+        try {
+          navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          showToast('Image copied to clipboard!', 'success');
+        } catch (e) {
+          showToast('Copy not supported on browser, use download!', 'info');
+        }
       });
     }
 
