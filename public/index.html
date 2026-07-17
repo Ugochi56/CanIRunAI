@@ -1607,15 +1607,15 @@
         <button class="modal-close-btn" onclick="closeContactModal()">✕</button>
       </div>
       <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;">
-        Have a feature request, missing model suggestion, or bug report? We'd love to hear from you!
+        Have a feature request, missing model suggestion, or bug report? Send a message directly to our inbox!
       </p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-        <a href="mailto:ugochukwufuz@gmail.com" target="_blank" style="text-decoration:none;">
+        <a href="mailto:tdevguy@gmail.com" target="_blank" style="text-decoration:none;">
           <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;transition:all 0.2s;">
             <div style="font-size:20px;margin-bottom:4px;">✉️</div>
             <div style="font-size:12px;font-weight:700;color:var(--text-primary);">Email Us</div>
-            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">ugochukwufuz@gmail.com</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">tdevguy@gmail.com</div>
           </div>
         </a>
         <a href="https://github.com/Ugochi56/CanIRunAI/issues" target="_blank" style="text-decoration:none;">
@@ -1628,11 +1628,22 @@
       </div>
 
       <form onsubmit="submitContactForm(event)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Your Email</label>
+            <input type="email" class="form-input-text" id="contact-email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Name (Optional)</label>
+            <input type="text" class="form-input-text" id="contact-name" placeholder="John Doe" />
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">Your Message / Feedback</label>
-          <textarea class="form-input-text" id="contact-message" rows="4" placeholder="Suggest a model, report an issue, or say hi…" required style="resize:vertical;"></textarea>
+          <textarea class="form-input-text" id="contact-message" rows="4" placeholder="Suggest a model, report an issue, or ask a question…" required style="resize:vertical;"></textarea>
         </div>
-        <button type="submit" class="btn-modal-action btn-pull primary">Send Message</button>
+        <button type="submit" id="btn-submit-contact" class="btn-modal-action btn-pull primary">Send Message</button>
       </form>
     </div>
   </div>
@@ -2848,14 +2859,65 @@
       document.getElementById('contact-modal')?.classList.remove('active');
     }
 
-    function submitContactForm(e) {
+    async function submitContactForm(e) {
       e.preventDefault();
-      const msg = document.getElementById('contact-message')?.value;
-      if (msg) {
-        window.open(`mailto:ugochukwufuz@gmail.com?subject=CanIRunAI%20Feedback&body=${encodeURIComponent(msg)}`, '_blank');
-        showToast('Opening email client… Thank you!', 'success');
-        document.getElementById('contact-message').value = '';
+      const emailInput = document.getElementById('contact-email');
+      const nameInput = document.getElementById('contact-name');
+      const msgInput = document.getElementById('contact-message');
+      const btn = document.getElementById('btn-submit-contact');
+
+      const email = emailInput?.value?.trim();
+      const name = nameInput?.value?.trim() || 'Anonymous Visitor';
+      const message = msgInput?.value?.trim();
+
+      if (!email || !message) {
+        showToast('Please enter your email and message', 'error');
+        return;
+      }
+
+      const originalBtnText = btn.innerHTML;
+      btn.innerHTML = '⏳ Sending Message…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('https://formsubmit.co/ajax/tdevguy@gmail.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            _replyto: email,
+            _subject: `CanIRunAI Feedback from ${name} (${email})`,
+            message: message
+          })
+        });
+
+        if (res.ok) {
+          showToast('✅ Message sent! We will reply to your email shortly.', 'success');
+          msgInput.value = '';
+
+          // Save sent message to local history
+          try {
+            const history = JSON.parse(localStorage.getItem('canirunai_sent_messages') || '[]');
+            history.push({ name, email, message, date: new Date().toISOString() });
+            localStorage.setItem('canirunai_sent_messages', JSON.stringify(history));
+          } catch (err) {}
+
+          closeContactModal();
+        } else {
+          throw new Error('Server returned error');
+        }
+      } catch (err) {
+        console.warn('FormSubmit API failed, falling back to mailto:', err);
+        window.open(`mailto:tdevguy@gmail.com?subject=CanIRunAI%20Feedback%20from%20${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`, '_blank');
+        showToast('Opened email client to send message!', 'info');
         closeContactModal();
+      } finally {
+        btn.innerHTML = originalBtnText;
+        btn.disabled = false;
       }
     }
     function showToast(message, type = 'info') {
