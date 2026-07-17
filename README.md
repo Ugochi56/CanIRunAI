@@ -43,7 +43,7 @@
 ### Install & Run
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/CanIRunAI.git
+git clone https://github.com/Ugochi56/CanIRunAI.git
 cd CanIRunAI
 npm install
 npm run dev
