@@ -1617,6 +1617,23 @@
     </div>
   </div>
 
+  <!-- Share Results Modal -->
+  <div class="modal-overlay" id="share-modal">
+    <div class="modal-card" style="max-width:680px;text-align:center;">
+      <div class="modal-header-row">
+        <h3>📸 Your Compatibility Card</h3>
+        <button class="modal-close-btn" onclick="closeShareModal()">✕</button>
+      </div>
+      <div id="share-canvas-container" style="margin-bottom:20px;display:flex;justify-content:center;">
+        <canvas id="share-canvas" width="1200" height="630" style="width:100%;max-width:580px;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow-md);"></canvas>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn-pull primary" onclick="downloadShareCard()" style="flex:1;justify-content:center;padding:12px;font-weight:700;">📥 Download Image</button>
+        <button class="btn-copy" onclick="copyShareCard()" style="flex:1;justify-content:center;padding:12px;font-weight:700;">📋 Copy Image</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Contact Modal -->
   <div class="modal-overlay" id="contact-modal">
     <div class="modal-card" style="max-width:520px;">
@@ -2860,7 +2877,8 @@
       ctx.font = '700 20px JetBrains Mono, sans-serif';
       ctx.fillStyle = '#e8e8f0';
       ctx.textAlign = 'right';
-      ctx.fillText('https://canirunai.com', width - 60, 560);
+      const displayUrl = window.location.hostname ? window.location.hostname : 'canirunai-five.vercel.app';
+      ctx.fillText(displayUrl, width - 60, 560);
       ctx.textAlign = 'left';
     }
 
