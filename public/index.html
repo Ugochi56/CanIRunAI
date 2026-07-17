@@ -916,15 +916,43 @@
       color: var(--accent-cyan);
     }
 
-    /* ── Toast ───────────────────────────────────────────────── */
+    /* ── Toast & Floating Contact ────────────────────────────── */
     .toast-container {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: 84px;
+      right: 20px;
       z-index: 1000;
       display: flex;
       flex-direction: column;
       gap: 8px;
+    }
+
+    .floating-contact-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1500;
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hover);
+      border-radius: 100px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-lg), 0 0 16px rgba(167, 139, 250, 0.2);
+      transition: all 0.25s ease;
+    }
+
+    .floating-contact-btn:hover {
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg), 0 0 24px rgba(167, 139, 250, 0.35);
     }
 
     .toast {
@@ -1426,6 +1454,11 @@
 
     <!-- Toast -->
     <div class="toast-container" id="toast-container"></div>
+
+    <!-- Floating Contact Button -->
+    <button class="floating-contact-btn" onclick="openContactModal()">
+      <span>💬</span> Contact
+    </button>
   </div>
 
   <!-- Manual Specs Modal -->
@@ -1486,9 +1519,12 @@
               <option value="amd:24:AMD Radeon RX 7900 XTX (24 GB)">RX 7900 XTX (24 GB VRAM)</option>
             </optgroup>
 
-            <optgroup label="── Intel Arc ──">
-              <option value="intel:8:Intel Arc A580 / A750 (8 GB)">Intel Arc A580 / A750 (8 GB VRAM)</option>
-              <option value="intel:16:Intel Arc A770 (16 GB)">Intel Arc A770 (16 GB VRAM)</option>
+            <optgroup label="── Intel Iris Xe & Arc ──">
+              <option value="intel:1.5:Intel Iris Xe / Iris Plus (1.5 GB Shared VRAM)">Intel Iris Xe / Iris Plus (1.5 GB Shared VRAM)</option>
+              <option value="intel:2:Intel Iris Xe Graphics (2 GB Shared VRAM)">Intel Iris Xe Graphics (2 GB Shared VRAM)</option>
+              <option value="intel:4:Intel Iris Xe / Arc Graphics 4GB (4 GB Shared VRAM)">Intel Iris Xe / Arc Graphics (4 GB Shared VRAM)</option>
+              <option value="intel:8:Intel Arc A580 / A750 (8 GB VRAM)">Intel Arc A580 / A750 (8 GB VRAM)</option>
+              <option value="intel:16:Intel Arc A770 (16 GB VRAM)">Intel Arc A770 (16 GB VRAM)</option>
             </optgroup>
 
             <optgroup label="── Apple Silicon (Unified Memory) ──">
@@ -1563,20 +1599,41 @@
     </div>
   </div>
 
-  <!-- Share Results Modal -->
-  <div class="modal-overlay" id="share-modal">
-    <div class="modal-card" style="max-width:680px;text-align:center;">
+  <!-- Contact Modal -->
+  <div class="modal-overlay" id="contact-modal">
+    <div class="modal-card" style="max-width:520px;">
       <div class="modal-header-row">
-        <h3>📸 Your Compatibility Card</h3>
-        <button class="modal-close-btn" onclick="closeShareModal()">✕</button>
+        <h3>💬 Contact & Feedback</h3>
+        <button class="modal-close-btn" onclick="closeContactModal()">✕</button>
       </div>
-      <div id="share-canvas-container" style="margin-bottom:20px;display:flex;justify-content:center;">
-        <canvas id="share-canvas" width="1200" height="630" style="width:100%;max-width:580px;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow-md);"></canvas>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;">
+        Have a feature request, missing model suggestion, or bug report? We'd love to hear from you!
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+        <a href="mailto:ugochukwufuz@gmail.com" target="_blank" style="text-decoration:none;">
+          <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;transition:all 0.2s;">
+            <div style="font-size:20px;margin-bottom:4px;">✉️</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text-primary);">Email Us</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">ugochukwufuz@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://github.com/Ugochi56/CanIRunAI/issues" target="_blank" style="text-decoration:none;">
+          <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;transition:all 0.2s;">
+            <div style="font-size:20px;margin-bottom:4px;">🐙</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text-primary);">GitHub Issues</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Report bugs & features</div>
+          </div>
+        </a>
       </div>
-      <div style="display:flex;gap:12px;">
-        <button class="btn-pull primary" onclick="downloadShareCard()" style="flex:1;">📥 Download Image</button>
-        <button class="btn-copy" onclick="copyShareCard()" style="flex:1;justify-content:center;padding:12px;">📋 Copy Image</button>
-      </div>
+
+      <form onsubmit="submitContactForm(event)">
+        <div class="form-group">
+          <label class="form-label">Your Message / Feedback</label>
+          <textarea class="form-input-text" id="contact-message" rows="4" placeholder="Suggest a model, report an issue, or say hi…" required style="resize:vertical;"></textarea>
+        </div>
+        <button type="submit" class="btn-modal-action btn-pull primary">Send Message</button>
+      </form>
     </div>
   </div>
 
@@ -2782,7 +2839,25 @@
       });
     }
 
-    // ── Toast Notifications ───────────────────────────────────────
+    // ── Contact Modal Handlers ─────────────────────────────────────
+    function openContactModal() {
+      document.getElementById('contact-modal')?.classList.add('active');
+    }
+
+    function closeContactModal() {
+      document.getElementById('contact-modal')?.classList.remove('active');
+    }
+
+    function submitContactForm(e) {
+      e.preventDefault();
+      const msg = document.getElementById('contact-message')?.value;
+      if (msg) {
+        window.open(`mailto:ugochukwufuz@gmail.com?subject=CanIRunAI%20Feedback&body=${encodeURIComponent(msg)}`, '_blank');
+        showToast('Opening email client… Thank you!', 'success');
+        document.getElementById('contact-message').value = '';
+        closeContactModal();
+      }
+    }
     function showToast(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
