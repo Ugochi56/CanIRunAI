@@ -2426,15 +2426,21 @@
       ctx.fillStyle = '#686880';
       ctx.fillText('YOUR HARDWARE CONFIGURATION', 90, 205);
 
-      const cpuBrand = systemInfo?.cpu?.brand || 'CPU';
+      let cpuBrand = systemInfo?.cpu?.brand || 'CPU';
+      cpuBrand = cpuBrand.replace(/\(R\)|\(TM\)/gi, '').trim();
+      if (cpuBrand.length > 45) cpuBrand = cpuBrand.substring(0, 42) + '…';
+
       const ramGB = systemInfo?.memory?.totalGB || 16;
-      const gpuName = systemInfo?.bestGpu?.model || 'Integrated GPU';
+      let gpuName = systemInfo?.bestGpu?.model || 'Integrated GPU';
+      gpuName = gpuName.replace(/\(R\)|\(TM\)/gi, '').trim();
+      if (gpuName.length > 35) gpuName = gpuName.substring(0, 32) + '…';
+
       const vramGB = systemInfo?.bestGpu?.vramGB || 0;
 
       ctx.font = '700 22px JetBrains Mono, sans-serif';
       ctx.fillStyle = '#e8e8f0';
-      ctx.fillText(`⚡ ${cpuBrand.substring(0, 32)}`, 90, 245);
-      ctx.fillText(`🧩 ${ramGB} GB RAM   🎮 ${gpuName.substring(0, 28)} (${vramGB} GB VRAM)`, 90, 280);
+      ctx.fillText(`⚡ ${cpuBrand}`, 90, 245);
+      ctx.fillText(`🧩 ${ramGB} GB RAM   🎮 ${gpuName} (${vramGB} GB VRAM)`, 90, 280);
 
       // Stat Counters
       const countCan = document.getElementById('count-can-run')?.textContent || '0';
@@ -2447,7 +2453,8 @@
 
       // Stat 1: Can Run
       ctx.fillStyle = '#16161f';
-      ctx.strokeStyle = '#34d39940';
+      ctx.strokeStyle = '#34d39960';
+      ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.roundRect(60, statY, statW, statH, 16);
       ctx.fill();
@@ -2461,7 +2468,9 @@
       ctx.fillText('CAN RUN SMOOTHLY', 90, statY + 122);
 
       // Stat 2: Tight Fit
-      ctx.strokeStyle = '#fbbf2440';
+      ctx.fillStyle = '#16161f';
+      ctx.strokeStyle = '#fbbf2460';
+      ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.roundRect(430, statY, statW, statH, 16);
       ctx.fill();
@@ -2475,7 +2484,9 @@
       ctx.fillText('MIGHT BE SLOW', 460, statY + 122);
 
       // Stat 3: Too Heavy
-      ctx.strokeStyle = '#f8717140';
+      ctx.fillStyle = '#16161f';
+      ctx.strokeStyle = '#f8717160';
+      ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.roundRect(800, statY, statW, statH, 16);
       ctx.fill();
