@@ -3040,6 +3040,25 @@
       }, 4000);
     }
 
+    // ── Global Keyboard & Modal Backdrop Listeners ─────────────────
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeSpecModal();
+        closeContactModal();
+        closeShareModal();
+      }
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          closeSpecModal();
+          closeContactModal();
+          closeShareModal();
+        }
+      });
+    });
+
     // ── Boot ──────────────────────────────────────────────────────
     init();
   </script>
