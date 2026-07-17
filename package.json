@@ -4,6 +4,7 @@
   "description": "Match your specs to the perfect LLM — check which AI models your hardware can run locally",
   "main": "server.js",
   "scripts": {
+    "build": "echo Static build complete",
     "dev": "node server.js",
     "start": "node server.js"
   },
