@@ -1873,11 +1873,19 @@
 
     // ── Init ──────────────────────────────────────────────────────
     async function init() {
-      await Promise.all([
-        loadSystemInfo(),
-        checkOllama(),
-      ]);
+      // 1. Immediately render specs and models synchronously (0ms delay for Vercel preview & fast initial paint)
+      systemInfo = loadSavedManualSpecs();
+      renderSpecs();
       renderModels();
+
+      // 2. Asynchronously query local server & Ollama status if available
+      try {
+        await Promise.all([
+          loadSystemInfo(),
+          checkOllama(),
+        ]);
+        renderModels();
+      } catch (e) {}
     }
 
     // ── Load System Info ──────────────────────────────────────────
