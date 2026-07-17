@@ -23,6 +23,9 @@
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- Vercel Web Analytics & Speed Insights -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
@@ -957,23 +960,84 @@
     footer a { color: var(--accent-blue); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
-    /* ── Responsive ─────────────────────────────────────────── */
+    /* ── Mobile & Responsive Redesign ────────────────────────── */
     @media (max-width: 768px) {
-      .hero h2 { font-size: 28px; }
-      .specs-grid { grid-template-columns: 1fr 1fr; }
-      .models-grid { grid-template-columns: 1fr; }
-      .summary-bar { grid-template-columns: 1fr; }
-      .filter-bar { flex-direction: column; align-items: stretch; }
-      .search-input { min-width: unset; }
-      .modal-card { padding: 20px; max-height: 90vh; overflow-y: auto; }
-      .quant-bar { gap: 6px; padding: 10px 12px; }
+      header { padding: 16px 0 0; }
+      .header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .logo-group { justify-content: space-between; width: 100%; }
+      .logo-text h1 { font-size: 20px; }
+
+      .hero { padding: 24px 0 16px; }
+      .hero h2 { font-size: 26px; letter-spacing: -0.5px; line-height: 1.25; }
+      .hero p { font-size: 14px; padding: 0 4px; }
+
+      .section-header { flex-wrap: wrap; gap: 8px; }
+      .section-header h3 { font-size: 14px; }
+      .section-header .line { display: none; }
+
+      .specs-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .spec-card { padding: 14px; border-radius: var(--radius-md); }
+      .spec-icon { width: 32px; height: 32px; font-size: 16px; margin-bottom: 8px; }
+      .spec-value { font-size: 14px; word-break: break-word; }
+      .spec-detail { font-size: 11px; }
+
+      .summary-bar { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+      .summary-stat { padding: 12px 6px; }
+      .summary-number { font-size: 22px; }
+      .summary-label { font-size: 9px; letter-spacing: 0.5px; }
+
+      .quant-bar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 12px;
+      }
+      .quant-title { margin-bottom: 2px; }
+
+      .filter-bar {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        gap: 8px;
+        flex-wrap: nowrap;
+      }
+      .filter-bar::-webkit-scrollbar { display: none; }
+      .search-input { min-width: 100%; width: 100%; margin-bottom: 4px; }
+      .filter-btn { padding: 8px 14px; font-size: 12px; flex-shrink: 0; }
+
+      .models-grid { grid-template-columns: 1fr; gap: 14px; }
+      .model-card { padding: 16px; }
+      .model-specs { gap: 6px; }
+      .model-spec-item { padding: 6px 4px; }
+      .model-spec-item .value { font-size: 12px; }
+
+      .modal-card {
+        padding: 20px 16px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: var(--radius-lg);
+      }
+      .modal-card form div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
     }
 
     @media (max-width: 480px) {
+      .container { padding: 0 12px; }
       .specs-grid { grid-template-columns: 1fr; }
-      .header-content { flex-direction: column; align-items: flex-start; }
-      .container { padding: 0 16px; }
-      .hero { padding: 28px 0 20px; }
+      .hero h2 { font-size: 22px; }
+      .summary-bar { grid-template-columns: 1fr; gap: 8px; }
+      .summary-stat { padding: 14px; }
+      .summary-number { font-size: 28px; }
+      .summary-label { font-size: 11px; }
     }
 
     /* ── Refresh button ─────────────────────────────────────── */
