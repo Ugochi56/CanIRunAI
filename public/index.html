@@ -1523,10 +1523,11 @@
             <optgroup label="── NVIDIA GeForce (Consumer) ──">
               <option value="nvidia:4:NVIDIA GeForce GTX 1650 / RTX 3050 (4 GB)">GTX 1650 / RTX 3050 (4 GB VRAM)</option>
               <option value="nvidia:6:NVIDIA GeForce RTX 2060 / 3050 6GB (6 GB)">RTX 2060 / 3050 6GB / 4050 Mobile (6 GB VRAM)</option>
-              <option value="nvidia:8:NVIDIA GeForce RTX 3060 8GB / RTX 4060 (8 GB)">RTX 3060 8GB / RTX 4060 / 4070 Laptop (8 GB VRAM)</option>
-              <option value="nvidia:12:NVIDIA GeForce RTX 3060 12GB / RTX 4070 (12 GB)" selected>RTX 3060 12GB / RTX 4070 / 4070 Super (12 GB VRAM)</option>
-              <option value="nvidia:16:NVIDIA GeForce RTX 3080 / 4070 Ti Super (16 GB)">RTX 3080 / RTX 4070 Ti Super / 4080 (16 GB VRAM)</option>
+              <option value="nvidia:8:NVIDIA GeForce RTX 3060 8GB / RTX 4060 / RTX 5060 (8 GB)">RTX 3060 8GB / RTX 4060 / RTX 5060 (8 GB VRAM)</option>
+              <option value="nvidia:12:NVIDIA GeForce RTX 3060 12GB / RTX 4070 / RTX 5070 (12 GB)" selected>RTX 3060 12GB / RTX 4070 / RTX 5070 (12 GB VRAM)</option>
+              <option value="nvidia:16:NVIDIA GeForce RTX 3080 / RTX 4070 Ti Super / RTX 4080 / RTX 5070 Ti / RTX 5080 (16 GB)">RTX 3080 / RTX 4070 Ti Super / RTX 4080 / RTX 5070 Ti / RTX 5080 (16 GB VRAM)</option>
               <option value="nvidia:24:NVIDIA GeForce RTX 3090 / RTX 4090 (24 GB)">RTX 3090 / RTX 3090 Ti / RTX 4090 (24 GB VRAM)</option>
+              <option value="nvidia:32:NVIDIA GeForce RTX 5090 (32 GB)">RTX 5090 (32 GB VRAM)</option>
             </optgroup>
 
             <optgroup label="── AMD Radeon ──">
@@ -1859,9 +1860,10 @@
         vramGB = +(deviceRam * 0.66).toFixed(1);
       } else if (gpuName.toLowerCase().includes('nvidia') || gpuName.toLowerCase().includes('geforce') || gpuName.toLowerCase().includes('rtx')) {
         isNvidia = true;
-        if (gpuName.includes('3060') || gpuName.includes('4070')) vramGB = 12;
-        else if (gpuName.includes('3080') || gpuName.includes('4070 Ti')) vramGB = 16;
+        if (gpuName.includes('5090')) vramGB = 32;
         else if (gpuName.includes('3090') || gpuName.includes('4090')) vramGB = 24;
+        else if (gpuName.includes('5080') || gpuName.includes('5070 Ti') || gpuName.includes('3080') || gpuName.includes('4070 Ti') || gpuName.includes('4080')) vramGB = 16;
+        else if (gpuName.includes('5070') || gpuName.includes('3060') || gpuName.includes('4070')) vramGB = 12;
         else if (gpuName.includes('3050') || gpuName.includes('1650')) vramGB = 4;
         else vramGB = 8;
       }
