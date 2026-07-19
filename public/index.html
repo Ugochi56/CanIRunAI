@@ -1363,7 +1363,10 @@
             <span>Hardware Analyzer</span>
           </div>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-refresh" id="btn-request-feature" onclick="openContactModal('Feature Request')" style="border-color:rgba(167,139,250,0.4);color:var(--accent-purple);">
+            💡 Request Feature
+          </button>
           <button class="btn-refresh" id="btn-refresh" onclick="init()">
             <span class="icon">⟳</span> Refresh
           </button>
@@ -1473,10 +1476,15 @@
     <!-- Toast -->
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- Floating Contact Button -->
-    <button class="floating-contact-btn" onclick="openContactModal()">
-      <span>💬</span> Contact
-    </button>
+    <!-- Floating Action Buttons -->
+    <div style="position:fixed;bottom:20px;right:20px;z-index:1500;display:flex;gap:10px;">
+      <button class="floating-contact-btn" onclick="openContactModal('Feature Request')" style="background:var(--bg-card);border-color:rgba(167,139,250,0.5);color:var(--accent-purple);">
+        <span>💡</span> Request Feature
+      </button>
+      <button class="floating-contact-btn" onclick="openContactModal('Contact')">
+        <span>💬</span> Contact
+      </button>
+    </div>
   </div>
 
   <!-- Manual Specs Modal -->
@@ -1635,22 +1643,22 @@
     </div>
   </div>
 
-  <!-- Contact Modal -->
+  <!-- Contact & Feature Request Modal -->
   <div class="modal-overlay" id="contact-modal">
     <div class="modal-card" style="max-width:520px;">
       <div class="modal-header-row">
-        <h3>💬 Contact & Feedback</h3>
+        <h3 id="contact-modal-title">💡 Request Feature & Feedback</h3>
         <button class="modal-close-btn" onclick="closeContactModal()">✕</button>
       </div>
       <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;">
-        Have a feature request, missing model suggestion, or bug report? Send a message directly to our inbox!
+        Have a feature idea, missing GPU/model suggestion, or bug report? Submit it directly to our developer team!
       </p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
         <a href="mailto:tdevguy@gmail.com" target="_blank" style="text-decoration:none;">
           <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;transition:all 0.2s;">
             <div style="font-size:20px;margin-bottom:4px;">✉️</div>
-            <div style="font-size:12px;font-weight:700;color:var(--text-primary);">Email Us</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text-primary);">Email Developer</div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">tdevguy@gmail.com</div>
           </div>
         </a>
@@ -1658,12 +1666,21 @@
           <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;transition:all 0.2s;">
             <div style="font-size:20px;margin-bottom:4px;">🐙</div>
             <div style="font-size:12px;font-weight:700;color:var(--text-primary);">GitHub Issues</div>
-            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Report bugs & features</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Submit feature requests</div>
           </div>
         </a>
       </div>
 
       <form onsubmit="submitContactForm(event)">
+        <div class="form-group">
+          <label class="form-label">Request Type</label>
+          <select class="form-select" id="contact-category">
+            <option value="Feature Request" selected>💡 Feature Request</option>
+            <option value="Missing Model/GPU Suggestion">🤖 Missing Model / GPU Suggestion</option>
+            <option value="General Feedback / Bug Report">💬 General Feedback / Bug Report</option>
+          </select>
+        </div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div class="form-group">
             <label class="form-label">Your Email</label>
@@ -1676,10 +1693,10 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Your Message / Feedback</label>
-          <textarea class="form-input-text" id="contact-message" rows="4" placeholder="Suggest a model, report an issue, or ask a question…" required style="resize:vertical;"></textarea>
+          <label class="form-label">Details / Feature Description</label>
+          <textarea class="form-input-text" id="contact-message" rows="4" placeholder="Describe the feature or improvement you would like to see…" required style="resize:vertical;"></textarea>
         </div>
-        <button type="submit" id="btn-submit-contact" class="btn-modal-action btn-pull primary">Send Message</button>
+        <button type="submit" id="btn-submit-contact" class="btn-modal-action btn-pull primary">🚀 Submit Request</button>
       </form>
     </div>
   </div>
@@ -2907,9 +2924,23 @@
       });
     }
 
-    // ── Contact Modal Handlers ─────────────────────────────────────
-    function openContactModal() {
-      document.getElementById('contact-modal')?.classList.add('active');
+    // ── Contact & Feature Request Modal Handlers ─────────────────
+    function openContactModal(initialType = 'Feature Request') {
+      const modal = document.getElementById('contact-modal');
+      const select = document.getElementById('contact-category');
+      const title = document.getElementById('contact-modal-title');
+      
+      if (select && initialType) {
+        if (initialType.includes('Feature')) select.value = 'Feature Request';
+        else if (initialType.includes('Model')) select.value = 'Missing Model/GPU Suggestion';
+        else select.value = 'General Feedback / Bug Report';
+      }
+
+      if (title) {
+        title.textContent = initialType.includes('Feature') ? '💡 Request a Feature' : '💬 Contact & Feedback';
+      }
+
+      modal?.classList.add('active');
     }
 
     function closeContactModal() {
@@ -2918,11 +2949,13 @@
 
     async function submitContactForm(e) {
       e.preventDefault();
+      const categorySelect = document.getElementById('contact-category');
       const emailInput = document.getElementById('contact-email');
       const nameInput = document.getElementById('contact-name');
       const msgInput = document.getElementById('contact-message');
       const btn = document.getElementById('btn-submit-contact');
 
+      const category = categorySelect?.value || 'Feature Request';
       const email = emailInput?.value?.trim();
       const name = nameInput?.value?.trim() || 'Anonymous Visitor';
       const message = msgInput?.value?.trim();
@@ -2933,7 +2966,7 @@
       }
 
       const originalBtnText = btn.innerHTML;
-      btn.innerHTML = '⏳ Sending Message…';
+      btn.innerHTML = '⏳ Submitting…';
       btn.disabled = true;
 
       try {
@@ -2946,20 +2979,21 @@
           body: JSON.stringify({
             name: name,
             email: email,
+            category: category,
             _replyto: email,
-            _subject: `CanIRunAI Feedback from ${name} (${email})`,
-            message: message
+            _subject: `CanIRunAI [${category}]: ${name} (${email})`,
+            message: `[Category: ${category}]\n\n${message}`
           })
         });
 
         if (res.ok) {
-          showToast('✅ Message sent! We will reply to your email shortly.', 'success');
+          showToast(`✅ ${category} submitted! Thank you for your feedback.`, 'success');
           msgInput.value = '';
 
           // Save sent message to local history
           try {
             const history = JSON.parse(localStorage.getItem('canirunai_sent_messages') || '[]');
-            history.push({ name, email, message, date: new Date().toISOString() });
+            history.push({ category, name, email, message, date: new Date().toISOString() });
             localStorage.setItem('canirunai_sent_messages', JSON.stringify(history));
           } catch (err) {}
 
@@ -2969,8 +3003,8 @@
         }
       } catch (err) {
         console.warn('FormSubmit API failed, falling back to mailto:', err);
-        window.open(`mailto:tdevguy@gmail.com?subject=CanIRunAI%20Feedback%20from%20${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`, '_blank');
-        showToast('Opened email client to send message!', 'info');
+        window.open(`mailto:tdevguy@gmail.com?subject=CanIRunAI%20[${encodeURIComponent(category)}]%20from%20${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`, '_blank');
+        showToast('Opened email client to send request!', 'info');
         closeContactModal();
       } finally {
         btn.innerHTML = originalBtnText;
