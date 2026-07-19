@@ -2154,6 +2154,7 @@
         }
       }
 
+      // ── LLM models: VRAM vs System RAM offloading ──
       const quantMult = QUANT_MULTIPLIERS[currentQuant] || 1.0;
       const needed = +(model.ramGB * quantMult).toFixed(1);
 
@@ -2167,14 +2168,15 @@
         }
       }
 
-      if (needed <= totalRAM * 0.55) {
-        return { status: 'can-run', label: 'Can Run', reason: `Needs ~${needed} GB (${currentQuant}) · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
-      } else if (needed <= totalRAM * 0.85) {
-        return { status: 'maybe', label: 'Tight Fit', reason: `Needs ~${needed} GB (${currentQuant}) · Close to your ${totalRAM} GB limit — may be slow` };
-      } else if (needed <= totalRAM + (vram * 0.7)) {
-        return { status: 'maybe', label: 'GPU Assist', reason: `Needs ~${needed} GB (${currentQuant}) · May fit with GPU offloading (${vram} GB VRAM)` };
+      // Check GPU VRAM vs System RAM
+      if (vram >= 2 && needed <= vram) {
+        return { status: 'can-run', label: 'GPU Fast', reason: `⚡ Fits 100% in GPU VRAM (~${needed} GB at ${currentQuant}, you have ${vram} GB VRAM) — ultra fast CUDA inference!` };
+      } else if (needed <= totalRAM * 0.6) {
+        return { status: 'can-run', label: 'Can Run', reason: `Needs ~${needed} GB (${currentQuant}) · Fits in System RAM (${totalRAM} GB RAM)${vram >= 2 ? ` with partial GPU offload (${vram} GB VRAM)` : ''}` };
+      } else if (needed <= totalRAM * 0.85 || needed <= vram + totalRAM * 0.5) {
+        return { status: 'maybe', label: 'GPU Assist', reason: `Needs ~${needed} GB (${currentQuant}) · Exceeds dedicated VRAM — uses CPU/RAM offload (slower tokens/sec)` };
       } else {
-        return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB (${currentQuant}) · You have ${totalRAM} GB RAM${vram > 2 ? ` + ${vram} GB VRAM` : ''}` };
+        return { status: 'cannot-run', label: 'Too Heavy', reason: `Needs ~${needed} GB (${currentQuant}) · Exceeds total hardware limits (${totalRAM} GB RAM + ${vram} GB VRAM)` };
       }
     }
 
