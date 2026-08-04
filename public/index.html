@@ -1655,11 +1655,11 @@
       </p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-        <a href="mailto:tdevguy@gmail.com" target="_blank" style="text-decoration:none;">
+        <a href="mailto:[YOUR_EMAIL]" target="_blank" style="text-decoration:none;">
           <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;transition:all 0.2s;">
             <div style="font-size:20px;margin-bottom:4px;">✉️</div>
             <div style="font-size:12px;font-weight:700;color:var(--text-primary);">Email Developer</div>
-            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">tdevguy@gmail.com</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">[YOUR_EMAIL]</div>
           </div>
         </a>
         <a href="https://github.com/Ugochi56/CanIRunAI/issues" target="_blank" style="text-decoration:none;">
@@ -2972,7 +2972,7 @@
       btn.disabled = true;
 
       try {
-        const res = await fetch('https://formsubmit.co/ajax/tdevguy@gmail.com', {
+        const res = await fetch('https://formsubmit.co/ajax/[YOUR_EMAIL]', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -3005,7 +3005,7 @@
         }
       } catch (err) {
         console.warn('FormSubmit API failed, falling back to mailto:', err);
-        window.open(`mailto:tdevguy@gmail.com?subject=CanIRunAI%20[${encodeURIComponent(category)}]%20from%20${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`, '_blank');
+        window.open(`mailto:[YOUR_EMAIL]?subject=CanIRunAI%20[${encodeURIComponent(category)}]%20from%20${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`, '_blank');
         showToast('Opened email client to send request!', 'info');
         closeContactModal();
       } finally {
@@ -3034,7 +3034,7 @@
       btn.disabled = true;
 
       try {
-        const res = await fetch('https://formsubmit.co/ajax/tdevguy@gmail.com', {
+        const res = await fetch('https://formsubmit.co/ajax/[YOUR_EMAIL]', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
@@ -3055,7 +3055,7 @@
         }
       } catch (err) {
         console.warn('Model request error:', err);
-        window.open(`mailto:tdevguy@gmail.com?subject=CanIRunAI%20Model%20Request:%20${encodeURIComponent(modelName)}&body=Please%20add%20${encodeURIComponent(modelName)}%20to%20CanIRunAI!`, '_blank');
+        window.open(`mailto:[YOUR_EMAIL]?subject=CanIRunAI%20Model%20Request:%20${encodeURIComponent(modelName)}&body=Please%20add%20${encodeURIComponent(modelName)}%20to%20CanIRunAI!`, '_blank');
         showToast('Opened email client to send request!', 'info');
       }
     }
