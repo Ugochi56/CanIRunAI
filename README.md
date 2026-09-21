@@ -2,10 +2,20 @@
 
 > Ever wondered if you can run LLaMA 3 or Mixtral locally? CanIRunAI checks your VRAM, RAM, and compute power to tell you exactly what fits.
 
-**CanIRunAI** is a local-first web app that auto-detects your hardware and instantly shows which AI models — LLMs, image generators, and video generators — your machine can actually run. Think of it as **"Can You Run It?" but for AI models.**
+<p align="center">
+  <a href="https://canirunai-five.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/🚀_Launch_Live_App-canirunai--five.vercel.app-7c3aed?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+  <a href="https://github.com/Ugochi56/CanIRunAI/stargazers">
+    <img src="https://img.shields.io/github/stars/Ugochi56/CanIRunAI?style=for-the-badge&color=ffd700&logo=github" alt="GitHub Stars" />
+  </a>
+  <a href="#-license">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT" />
+  </a>
+</p>
 
 <p align="center">
-  <img src="public/logo.png" alt="CanIRunAI Logo" width="120" />
+  <img src="public/og-preview.png" alt="CanIRunAI Interface" width="820" />
 </p>
 
 <p align="center">
@@ -14,31 +24,43 @@
 
 ---
 
+**CanIRunAI** is a local-first web application that analyzes your hardware and instantly tells you which AI models — LLMs, vision models, image generators, and video generators — your system can actually run. 
+
+Think of it as **"Can You Run It?" for the modern AI ecosystem.**
+
+---
+
 ## ✨ Features
 
-- **🔍 Auto-Detect Hardware** — Instantly scans your CPU, GPU, VRAM, and system RAM on startup
-- **🧠 60+ Model Database** — Covers LLMs (Llama, Qwen, Mistral, DeepSeek, Gemma, Phi), image gen (Stable Diffusion, FLUX, PixArt), and video gen (CogVideoX, Wan, HunyuanVideo, Mochi)
-- **✅ Compatibility Verdicts** — Every model gets a clear **Can Run / Tight Fit / Too Heavy** rating based on your actual hardware
-- **⬇️ One-Click Pull** — Pull Ollama models directly from the UI with real-time streaming progress bars
-- **🍎 Apple Silicon Aware** — Detects unified memory on M1/M2/M3/M4 Macs and calculates effective VRAM allocation
-- **🖥️ CPU-Only Models** — Highlights models that run without a GPU at all (stable-diffusion.cpp, LCM, OpenVINO)
-- **🔎 Search & Filter** — Filter by compatibility, category (Chat, Code, Vision, Video, Image, CPU-Only), or search by name
-- **🚀 Fast** — Hardware info is cached at startup; page loads are near-instant after first boot
+- **🌐 100% In-Browser Auto-Detection** — Scans your GPU, VRAM, and RAM in 0ms using WebGL without requiring any local installs or extensions.
+- **⚙️ Custom Rig Simulator** — Manually test hypothetical setups (simulate RTX 5090 / 4090, Apple M4 Max, 64GB RAM, Intel Iris Xe, etc.).
+- **⚖️ Dynamic Quantization Precision** — Toggle between **Q4, Q5, Q8, and FP16** to see how memory requirements and compatibility ratings shift in real time.
+- **🧠 60+ Model Database** — DeepSeek (R1 / V3), LLaMA 3.1/3.2, Qwen 2.5, Gemma 2, Mistral, FLUX.1, SDXL, Wan 2.1, HunyuanVideo, and more.
+- **🍎 Apple Silicon & Unified Memory** — Accurately calculates unified memory allocation and Metal limits for M1/M2/M3/M4 Macs.
+- **⚡ GPU VRAM vs. RAM Offload Breakdown** — Distinguishes between 100% GPU VRAM execution (fastest) and CPU/RAM layer offloading (slower).
+- **🖥️ CPU-Only Models** — Highlights models that run smoothly without any dedicated GPU (stable-diffusion.cpp, LCM, OpenVINO).
+- **📸 Shareable Compatibility Card** — Generates a downloadable 1200×630 summary graphic of your system's capabilities for Discord, Reddit, or X.
+- **⬇️ One-Click Ollama Pulling** — When run locally, stream-pull models directly into your local Ollama runtime.
+
+---
 
 ## 📸 How It Works
 
-1. **Start the server** — your hardware is scanned once and cached
-2. **Open the UI** — see your CPU, GPU, RAM, and OS at a glance
-3. **Browse the model library** — every model shows exactly how much RAM/VRAM it needs vs. what you have
-4. **Pull models** — if Ollama is running, pull LLMs directly with streaming download progress
-5. **No Ollama? No problem** — the compatibility checker works regardless; Ollama is only needed for pulling models
+1. **Visit the Web App** — Head to [canirunai-five.vercel.app](https://canirunai-five.vercel.app) (or run locally).
+2. **Auto-Detect or Edit Specs** — View your detected hardware, or click **✏️ Edit Specs** to test any custom rig.
+3. **Select Precision** — Toggle between `Q4 (Standard)`, `Q5`, `Q8`, or `FP16` to view exact RAM/VRAM loads.
+4. **Browse Compatibility** — Filter by category (Chat, Code, Vision, Video, Image, CPU-Only) or search by name.
 
-## 🚀 Quick Start
+---
+
+## 🚀 Quick Start (Local Development)
+
+You can run CanIRunAI locally to enable direct Ollama pulling and exact OS-level hardware detection:
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) v18+
-- [Ollama](https://ollama.com/download) *(optional — only needed to pull/run LLM models)*
+- [Ollama](https://ollama.com/download) *(optional — only needed to pull/run models locally)*
 
 ### Install & Run
 
@@ -51,7 +73,9 @@ npm run dev
 
 Open **http://localhost:3456** in your browser.
 
-### That's it. No build step, no bundler, no config files.
+> No complex bundlers, build steps, or database setup required.
+
+---
 
 ## 🗂 Project Structure
 
@@ -59,45 +83,51 @@ Open **http://localhost:3456** in your browser.
 CanIRunAI/
 ├── server.js          # Express server — hardware detection, Ollama proxy, SSE streaming
 ├── public/
-│   ├── index.html     # Single-page app — full UI, model database, compatibility engine
-│   └── logo.png       # App logo/favicon
+│   ├── index.html     # Single-page application — UI, model database, compatibility engine
+│   ├── logo.png       # App logo
+│   └── og-preview.png # Social & README preview screenshot
 ├── package.json
-└── .gitignore
+└── vercel.json        # Static deployment config for Vercel
 ```
+
+---
 
 ## 🧠 Model Categories
 
 | Category | Examples | What's Checked |
-|----------|----------|----------------|
-| 💬 **Chat** | Llama 3.1, Qwen 2.5, Mistral, Gemma 2 | System RAM |
-| 💻 **Code** | CodeLlama, StarCoder2, Qwen2.5-Coder | System RAM |
-| 🧩 **Reasoning** | DeepSeek R1, Phi-3/4 | System RAM |
-| 👁 **Vision** | LLaVA, Llama 3.2 Vision | System RAM |
+|:---|:---|:---|
+| 💬 **Chat & Reasoning** | DeepSeek R1, Llama 3.1, Qwen 2.5, Mistral, Gemma 2 | GPU VRAM + System RAM (Quantized) |
+| 💻 **Code** | Qwen 2.5 Coder, DeepSeek Coder V2, StarCoder2, CodeLlama | System RAM & VRAM |
+| 👁 **Vision** | LLaVA 13B, Llama 3.2 Vision | System RAM & VRAM |
 | 🔤 **Embedding** | Nomic, MxBai, all-MiniLM | System RAM |
-| 🎨 **Image Gen** | FLUX, SDXL, SD 1.5, PixArt, Playground | GPU VRAM |
-| 🎬 **Video Gen** | CogVideoX, HunyuanVideo, Wan 2.1, Mochi | GPU VRAM |
-| 🖥 **CPU-Only** | stable-diffusion.cpp, LCM, OpenVINO | RAM only (no GPU) |
+| 🎨 **Image Gen** | FLUX.1 (Dev/Schnell), SDXL, SD 1.5, PixArt | Dedicated GPU VRAM |
+| 🎬 **Video Gen** | Wan 2.1, HunyuanVideo, CogVideoX, Mochi | High VRAM Thresholds |
+| 🖥 **CPU-Only** | stable-diffusion.cpp, LCM, OpenVINO | CPU RAM only (No GPU needed) |
+
+---
 
 ## 🔧 Tech Stack
 
-- **Backend:** Node.js + Express
-- **Hardware Detection:** [systeminformation](https://github.com/sebhildebrandt/systeminformation)
-- **LLM Runtime:** [Ollama](https://ollama.com/) (optional integration)
-- **Frontend:** Vanilla HTML/CSS/JS — no framework, no build step
-- **Fonts:** Inter + JetBrains Mono via Google Fonts
+- **Frontend:** Vanilla HTML5, CSS3, Modern ES6+ JavaScript, WebGL (Hardware detection), HTML5 Canvas
+- **Backend (Local Mode):** Node.js + Express
+- **Hardware Telemetry:** [systeminformation](https://github.com/sebhildebrandt/systeminformation)
+- **Deployment:** Vercel Static Hosting
+
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Some ideas:
+Contributions are warmly welcomed! Some easy ways to contribute:
 
-- **Add more models** — expand the `MODEL_DB` array in `index.html`
-- **Improve compatibility logic** — refine RAM/VRAM thresholds
-- **Linux GPU detection** — test and improve AMD ROCm / Intel Arc detection
-- **Docker support** — containerize for easy deployment
+- **Add new models** — Add missing LLMs or diffusion models to `MODEL_DB` in `public/index.html`
+- **Refine compatibility rules** — Help tweak RAM/VRAM offload thresholds
+- **Suggest features** — Use the in-app **💡 Request Feature** button or open a GitHub Issue
+
+---
 
 ## 📄 License
 
-MIT — do whatever you want with it.
+MIT © [CanIRunAI Contributors](LICENSE)
 
 ---
 
