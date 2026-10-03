@@ -6,6 +6,81 @@
   <title>CanIRunAI — Match your specs to the perfect LLM</title>
   <meta name="title" content="CanIRunAI — Match your specs to the perfect LLM" />
   <meta name="description" content="Auto-detect your RAM, VRAM, and GPU to instantly check which AI models (LLMs, vision & video gen) your hardware can run locally." />
+  <link rel="canonical" href="https://canirunai-five.vercel.app/" />
+  <meta name="keywords" content="Can I run AI, local LLM compatibility, GPU VRAM checker, DeepSeek R1 requirements, Llama 3.1 hardware, Ollama models, AI hardware checker, WebGL GPU detection, FLUX.1 system requirements, local AI models" />
+
+  <!-- Schema.org JSON-LD (SEO, GEO & AEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CanIRunAI",
+    "url": "https://canirunai-five.vercel.app/",
+    "description": "Auto-detect your RAM, VRAM, and GPU to instantly check which AI models (LLMs, vision & video gen) your hardware can run locally.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "In-browser GPU and VRAM detection via WebGL",
+      "Compatibility analysis across 60+ local AI models",
+      "Quantization precision toggle from Q4 to FP16",
+      "Apple Silicon unified memory calculation",
+      "Ollama integration and hardware simulation"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can my PC or laptop run local LLMs like LLaMA 3 or DeepSeek R1?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most modern PCs and laptops with 16 GB of RAM can run 7B to 8B parameter models (such as LLaMA 3.1 8B, Qwen 2.5 7B, or Mistral 7B) using 4-bit (Q4) quantization. Running 14B to 32B models typically requires 24 to 32 GB of system RAM or a dedicated GPU with 12 to 16 GB of VRAM."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I run AI models on CPU without a dedicated GPU?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Lightweight quantized LLMs like LLaMA 3.2 1B/3B, Phi-3 Mini 3.8B, and Qwen 2.5 0.5B/1.5B run fast on modern multi-core CPUs using Ollama or llama.cpp. For image generation, frameworks like stable-diffusion.cpp and LCM-LoRA allow image synthesis directly on CPU without a dedicated CUDA GPU."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between Q4, Q5, Q8, and FP16 quantization?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Quantization compresses model weights to consume less memory. FP16 requires approximately 2 bytes per parameter (a 70B model needs ~140 GB). 4-bit quantization (Q4) reduces this to ~0.55 bytes per parameter, allowing a 70B model to fit in ~40 GB with minimal accuracy loss. Q8 provides near-original precision at ~1 byte per parameter."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does Apple Silicon Unified Memory work for local AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Apple Silicon Macs (M1/M2/M3/M4) share memory between CPU and GPU. Metal and Ollama can allocate 66% to 75% of total system RAM as GPU VRAM. A Mac with 36 GB or 64 GB of unified memory can run large 14B to 32B models at full GPU speed without a discrete graphics card."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does CanIRunAI detect my hardware specs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CanIRunAI runs 100% client-side in your browser using standard WebGL APIs (WEBGL_debug_renderer_info) and navigator.deviceMemory to inspect your GPU, VRAM, and RAM instantly with zero installs or tracking."
+        }
+      }
+    ]
+  }
+  </script>
 
   <!-- Open Graph / Facebook / Discord / LinkedIn -->
   <meta property="og:type" content="website" />
@@ -994,6 +1069,94 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
+    /* ── FAQ Section (SEO, GEO & AEO) ───────────────────────── */
+    .faq-section {
+      margin: 48px 0 24px;
+      padding: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .faq-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .faq-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .faq-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .faq-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .faq-item[open] {
+      border-color: rgba(167, 139, 250, 0.4);
+      background: var(--bg-card-hover);
+    }
+
+    .faq-question {
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .faq-question::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-question::after {
+      content: '+';
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--accent-purple);
+      transition: transform 0.2s ease;
+    }
+
+    .faq-item[open] .faq-question::after {
+      content: '−';
+    }
+
+    .faq-answer {
+      padding: 0 18px 16px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      padding-top: 12px;
+    }
+
+    .faq-answer strong {
+      color: var(--text-primary);
+    }
+
     /* ── Footer ─────────────────────────────────────────────── */
     footer {
       padding: 32px 0;
@@ -1472,6 +1635,52 @@
 
     <!-- Models Grid -->
     <div class="models-grid" id="models-grid"></div>
+
+    <!-- FAQ & Hardware Knowledge (SEO, GEO & AEO) -->
+    <section class="faq-section" id="faq-section">
+      <div class="faq-title">
+        <span>📚</span> Frequently Asked Questions & Hardware Guide
+      </div>
+      <div class="faq-subtitle">
+        Direct answers to common questions about running open-source LLMs, VRAM requirements, and local AI performance.
+      </div>
+      <div class="faq-grid">
+        <details class="faq-item" open>
+          <summary class="faq-question">Can my PC or laptop run local LLMs like LLaMA 3 or DeepSeek R1?</summary>
+          <div class="faq-answer">
+            Most modern PCs and laptops with <strong>16 GB of RAM</strong> can comfortably run <strong>7B to 8B parameter models</strong> (such as LLaMA 3.1 8B, Qwen 2.5 7B, or Mistral 7B) at 4-bit (Q4) quantization. Running larger 14B to 32B models typically requires 24 to 32 GB of system RAM or a dedicated GPU with 12 to 16 GB of VRAM. Models with 70B parameters require 40 GB+ of VRAM/RAM.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">Can I run AI models on CPU without a dedicated GPU?</summary>
+          <div class="faq-answer">
+            <strong>Yes!</strong> Lightweight quantized LLMs like LLaMA 3.2 1B/3B, Phi-3 Mini 3.8B, and Qwen 2.5 0.5B/1.5B run fast on modern multi-core CPUs using Ollama or llama.cpp. For image generation, frameworks like <code>stable-diffusion.cpp</code> and LCM-LoRA enable image synthesis directly on CPU without needing a dedicated CUDA GPU.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">What is the difference between Q4, Q5, Q8, and FP16 quantization?</summary>
+          <div class="faq-answer">
+            Quantization compresses model weights to consume significantly less memory. <strong>FP16</strong> requires ~2 bytes per parameter (a 70B model needs ~140 GB). <strong>Q4 (4-bit)</strong> reduces this to ~0.55 bytes per parameter, allowing a 70B model to fit in ~40 GB with minimal loss in reasoning quality. <strong>Q8</strong> provides near-original precision at ~1 byte per parameter.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">How does Apple Silicon Unified Memory work for local AI?</summary>
+          <div class="faq-answer">
+            On Apple Silicon Macs (M1, M2, M3, M4), the CPU and GPU share high-bandwidth Unified Memory. Metal and Ollama can allocate <strong>66% to 75% of total system RAM as GPU VRAM</strong>. For example, a Mac with 36 GB or 64 GB of unified memory can run large 14B to 32B models at full GPU speed without needing a discrete graphics card.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">How does CanIRunAI detect my hardware specs?</summary>
+          <div class="faq-answer">
+            CanIRunAI runs <strong>100% client-side in your browser</strong> using standard WebGL APIs (<code>WEBGL_debug_renderer_info</code>) and <code>navigator.deviceMemory</code> to inspect your GPU, VRAM, and RAM instantly with zero installs or tracking. You can also customize your exact hardware using the <strong>✏️ Edit Specs</strong> button above.
+          </div>
+        </details>
+      </div>
+    </section>
 
     <!-- Toast -->
     <div class="toast-container" id="toast-container"></div>
