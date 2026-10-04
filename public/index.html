@@ -231,15 +231,19 @@
 
     /* ── Floating Header Bar (Sleek Spatial Nav) ────────────── */
     header {
-      padding: 14px 0;
+      width: 100%;
       position: sticky;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 500;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      background: rgba(7, 8, 13, 0.8);
+      background: rgba(7, 8, 13, 0.85);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      padding: 14px 0;
+      margin-bottom: 0;
     }
 
     .header-content {
@@ -2181,9 +2185,9 @@
   <!-- Live Background Canvas (Interactive Neural Constellation) -->
   <canvas id="bg-canvas"></canvas>
 
-  <div class="container">
-    <!-- Header -->
-    <header>
+  <!-- Header (Edge-to-Edge Full-Width Sticky Topbar) -->
+  <header>
+    <div class="container">
       <div class="header-content">
         <a href="/" class="logo-group">
           <div class="logo-icon">
@@ -2219,7 +2223,10 @@
           </div>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
+
+  <div class="container">
 
     <!-- Hero (Atmospheric Spatial Hero) -->
     <section class="hero fade-in">
