@@ -229,37 +229,39 @@
       padding: 0 28px;
     }
 
-    /* ── Floating Header Bar ────────────────────────────────── */
+    /* ── Floating Header Bar (Sleek Spatial Nav) ────────────── */
     header {
-      padding: 24px 0 16px;
+      padding: 14px 0;
       position: sticky;
       top: 0;
       z-index: 500;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      background: rgba(7, 8, 13, 0.7);
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 16px;
+      background: rgba(7, 8, 13, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 24px;
     }
 
     .header-content {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      flex-wrap: wrap;
+      min-height: 44px;
     }
 
     .logo-group {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       text-decoration: none;
+      z-index: 2;
     }
 
     .logo-icon {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
@@ -283,7 +285,7 @@
     }
 
     .logo-text h1 {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 900;
       letter-spacing: -0.6px;
       background: linear-gradient(135deg, #ffffff 40%, #a78bfa 100%);
@@ -292,7 +294,7 @@
     }
 
     .logo-text span {
-      font-size: 10.5px;
+      font-size: 10px;
       color: var(--accent-green);
       font-weight: 700;
       letter-spacing: 1.2px;
@@ -301,20 +303,27 @@
       margin-top: -2px;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+    }
+
     .btn-refresh {
-      padding: 9px 16px;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      padding: 0;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
-      border-radius: var(--radius-full);
+      border-radius: 50%;
       color: var(--text-secondary);
-      font-family: var(--font-sans);
-      font-size: 12.5px;
-      font-weight: 600;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      justify-content: center;
       backdrop-filter: blur(10px);
     }
 
@@ -322,11 +331,12 @@
       border-color: var(--border-hover);
       color: var(--text-primary);
       transform: translateY(-1px);
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .btn-refresh .icon {
       display: inline-block;
+      font-size: 15px;
       transition: transform 0.4s;
     }
     .btn-refresh:hover .icon { transform: rotate(180deg); }
@@ -334,13 +344,13 @@
     .ollama-status {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      padding: 8px 16px;
-      background: rgba(18, 20, 32, 0.6);
+      gap: 8px;
+      padding: 7px 14px;
+      background: rgba(18, 20, 32, 0.65);
       border: 1px solid var(--border);
       border-radius: var(--radius-full);
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 11.5px;
+      font-weight: 600;
       backdrop-filter: blur(12px);
     }
 
@@ -1477,36 +1487,51 @@
       opacity: 0.65;
     }
 
-    /* ── Header Navigation & GitHub Pill ────────────────────── */
+    /* ── Centered Glass Floating Nav Pill ───────────────────── */
     .header-nav {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 2px;
+      background: rgba(18, 20, 32, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      z-index: 1;
     }
 
     .header-nav a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
-      transition: color 0.2s;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
     }
 
     .header-nav a:hover {
       color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .btn-github-pill {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 8px 16px;
+      gap: 6px;
+      padding: 7px 14px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
       border-radius: var(--radius-full);
       color: var(--text-primary);
       text-decoration: none;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       backdrop-filter: blur(8px);
@@ -1788,19 +1813,23 @@
     footer a:hover { text-decoration: underline; color: #ffffff; }
 
     /* ── Mobile & Responsive Redesign ────────────────────────── */
-    @media (max-width: 900px) {
+    @media (max-width: 1060px) {
       .header-nav { display: none; }
-      .steps-grid { grid-template-columns: 1fr; }
     }
+
     @media (max-width: 768px) {
-      header { padding: 16px 0 0; }
+      header { padding: 12px 0; }
       .header-content {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
       }
-      .logo-group { justify-content: space-between; width: 100%; }
-      .logo-text h1 { font-size: 20px; }
+      .logo-text h1 { font-size: 18px; }
+      .logo-text span { display: none; }
+      .btn-github-pill span { display: none; }
+      .btn-github-pill { padding: 7px 10px; }
+      .steps-grid { grid-template-columns: 1fr; }
 
       .hero { padding: 24px 0 16px; }
       .hero h2 { font-size: 26px; letter-spacing: -0.5px; line-height: 1.25; }
@@ -2156,7 +2185,7 @@
     <!-- Header -->
     <header>
       <div class="header-content">
-        <div class="logo-group">
+        <a href="/" class="logo-group">
           <div class="logo-icon">
             <img src="/logo.png" alt="CanIRunAI Logo" class="logo-img" />
           </div>
@@ -2164,7 +2193,9 @@
             <h1>CanIRunAI</h1>
             <span>Hardware Analyzer</span>
           </div>
-        </div>
+        </a>
+
+        <!-- Centered Floating Pill Navigation -->
         <nav class="header-nav">
           <a href="#specs-section">Scanner</a>
           <a href="#why-section">Why CanIRunAI</a>
@@ -2172,18 +2203,17 @@
           <a href="#how-it-works-section">How It Works</a>
           <a href="#faq-section">FAQ</a>
         </nav>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <a href="https://github.com/Ugochi56/CanIRunAI" target="_blank" rel="noopener noreferrer" class="btn-github-pill">
+
+        <!-- Right Side Action Group -->
+        <div class="header-actions">
+          <a href="https://github.com/Ugochi56/CanIRunAI" target="_blank" rel="noopener noreferrer" class="btn-github-pill" title="Star CanIRunAI on GitHub">
             <svg height="14" width="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-            Star on GitHub
+            <span>Star</span>
           </a>
-          <button class="btn-refresh" id="btn-request-feature" onclick="openContactModal('Feature Request')" style="border-color:rgba(167,139,250,0.4);color:var(--accent-purple);">
-            💡 Request Feature
+          <button class="btn-refresh" id="btn-refresh" onclick="init()" title="Re-scan Hardware Specs">
+            <span class="icon">⟳</span>
           </button>
-          <button class="btn-refresh" id="btn-refresh" onclick="init()">
-            <span class="icon">⟳</span> Refresh
-          </button>
-          <div class="ollama-status" id="ollama-status">
+          <div class="ollama-status" id="ollama-status" title="Local Ollama instance status">
             <div class="status-dot" id="status-dot"></div>
             <span id="status-text">Checking Ollama…</span>
           </div>
