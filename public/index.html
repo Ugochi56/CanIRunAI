@@ -1465,19 +1465,333 @@
       color: var(--text-primary);
     }
 
-    /* ── Footer ─────────────────────────────────────────────── */
-    footer {
-      padding: 32px 0;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border);
+    /* ── Live Background Canvas ──────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -2;
+      opacity: 0.65;
     }
 
-    footer a { color: var(--accent-blue); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    /* ── Header Navigation & GitHub Pill ────────────────────── */
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .header-nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover {
+      color: #ffffff;
+    }
+
+    .btn-github-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-github-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+    }
+
+    /* ── Hero Actions ───────────────────────────────────────── */
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      filter: brightness(1.06);
+    }
+
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-hover);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* ── Why CanIRunAI Bento Grid ───────────────────────────── */
+    .why-section {
+      margin: 64px 0 44px;
+    }
+
+    .section-title-center {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .section-title-center .badge-mini {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: var(--radius-full);
+      padding: 4px 14px;
+      margin-bottom: 12px;
+    }
+
+    .section-title-center h3 {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .section-title-center p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .why-card {
+      background: rgba(18, 20, 32, 0.65);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .why-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(168, 85, 247, 0.4);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 20px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .why-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .why-card:nth-child(2) .why-icon {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .why-card:nth-child(3) .why-icon {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: rgba(6, 182, 212, 0.25);
+    }
+    .why-card:nth-child(4) .why-icon {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+
+    .why-card h4 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .why-card p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── How It Works Section ───────────────────────────────── */
+    .how-it-works-section {
+      margin: 64px 0 44px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .step-card {
+      background: rgba(18, 20, 32, 0.65);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      position: relative;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .step-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 20px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .step-num {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 900;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+    }
+
+    .step-card h4 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .step-card p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── Ecosystem Matrix ───────────────────────────────────── */
+    .ecosystem-section {
+      margin: 64px 0 44px;
+      text-align: center;
+    }
+
+    .ecosystem-pills {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .ecosystem-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(18, 20, 32, 0.65);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ecosystem-pill:hover {
+      border-color: rgba(99, 102, 241, 0.5);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer {
+      padding: 36px 0;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+    }
+
+    footer a { color: var(--accent-blue); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; color: #ffffff; }
 
     /* ── Mobile & Responsive Redesign ────────────────────────── */
+    @media (max-width: 900px) {
+      .header-nav { display: none; }
+      .steps-grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 768px) {
       header { padding: 16px 0 0; }
       .header-content {
@@ -1649,53 +1963,62 @@
       transform: translateY(-1px);
     }
 
-    /* ── Quantization Controls ─────────────────────────────── */
+    /* ── Quantization Console (Tactile Segmented Controller) ─ */
     .quant-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
-      background: var(--bg-card);
-      padding: 12px 16px;
-      border-radius: var(--radius-md);
+      background: rgba(18, 20, 32, 0.65);
+      padding: 12px 18px;
+      border-radius: var(--radius-xl);
       border: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .quant-title {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--text-secondary);
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-right: 6px;
+      letter-spacing: 1.2px;
+      margin-right: 8px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
     .quant-btn {
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
+      padding: 7px 16px;
+      border-radius: var(--radius-full);
       font-size: 12px;
       font-weight: 600;
-      background: var(--bg-surface);
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .quant-btn:hover {
-      border-color: var(--accent-purple);
-      color: var(--text-primary);
+      border-color: rgba(168, 85, 247, 0.5);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-1px);
     }
 
     .quant-btn.active {
-      background: var(--accent-purple-dim);
-      border-color: var(--accent-purple);
-      color: var(--accent-purple);
-      box-shadow: 0 0 10px rgba(167, 139, 250, 0.2);
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(99, 102, 241, 0.25));
+      border-color: rgba(192, 132, 252, 0.7);
+      color: #ffffff;
+      box-shadow: 0 2px 14px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      font-weight: 700;
     }
 
     /* ── Modals & Dialogs ───────────────────────────────────── */
@@ -1826,6 +2149,9 @@
   </style>
 </head>
 <body>
+  <!-- Live Background Canvas (Interactive Neural Constellation) -->
+  <canvas id="bg-canvas"></canvas>
+
   <div class="container">
     <!-- Header -->
     <header>
@@ -1839,7 +2165,18 @@
             <span>Hardware Analyzer</span>
           </div>
         </div>
+        <nav class="header-nav">
+          <a href="#specs-section">Scanner</a>
+          <a href="#why-section">Why CanIRunAI</a>
+          <a href="#filters-section">Models</a>
+          <a href="#how-it-works-section">How It Works</a>
+          <a href="#faq-section">FAQ</a>
+        </nav>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <a href="https://github.com/Ugochi56/CanIRunAI" target="_blank" rel="noopener noreferrer" class="btn-github-pill">
+            <svg height="14" width="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            Star on GitHub
+          </a>
           <button class="btn-refresh" id="btn-request-feature" onclick="openContactModal('Feature Request')" style="border-color:rgba(167,139,250,0.4);color:var(--accent-purple);">
             💡 Request Feature
           </button>
@@ -1857,10 +2194,14 @@
     <!-- Hero (Atmospheric Spatial Hero) -->
     <section class="hero fade-in">
       <div class="hero-badge">✦ NEXT-GEN LOCAL AI COMPATIBILITY ENGINE</div>
-      <h2>Match your specs<br/><span class="hero-gradient-text">to the perfect AI model.</span></h2>
-      <p>Instantly analyze your CPU, unified RAM, and GPU VRAM to verify local LLMs, multimodal vision, coding copilots, and image generation models.</p>
+      <h2>Can Your Machine Run Local AI?<br/><span class="hero-gradient-text">Find Out In 1 Second.</span></h2>
+      <p>Instant client-side hardware probe. Match your CPU, unified memory, and GPU VRAM against 50+ cutting-edge LLMs, coding copilots, and vision models without downloading gigabytes of weights.</p>
+      <div class="hero-actions">
+        <a href="#specs-section" class="btn-hero-primary">⚡ Scan My Hardware</a>
+        <a href="#filters-section" class="btn-hero-secondary">Explore Model Library ↓</a>
+      </div>
       <div class="hero-features">
-        <span class="hero-pill">⚡ Zero-Latency Hardware Probe</span>
+        <span class="hero-pill">⚡ Zero-Latency Client Probe</span>
         <span class="hero-pill">🔒 100% Client-Side &amp; Private</span>
         <span class="hero-pill">🎛 Precision Quantization Math</span>
       </div>
@@ -1914,6 +2255,41 @@
       </button>
     </div>
 
+    <!-- Why CanIRunAI Bento Grid -->
+    <section class="why-section fade-in" id="why-section">
+      <div class="section-title-center">
+        <span class="badge-mini">✦ UNCOMPROMISING PRECISION</span>
+        <h3>Why CanIRunAI?</h3>
+        <p>Running local AI should be effortless. We eliminate the guesswork, wasted bandwidth, and Out-Of-Memory freezes before you pull a single tensor.</p>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🛑</div>
+          <h4>Say Goodbye to 20GB OOM Freezes</h4>
+          <p>Downloading a 30GB model only to watch your runtime crash with <code>CUDA out of memory</code> is frustrating. CanIRunAI verifies VRAM budgets before you waste time and bandwidth.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon">🧠</div>
+          <h4>Unified Memory vs. Discrete VRAM</h4>
+          <p>Apple Silicon (M1/M2/M3/M4) allocates high-bandwidth Unified Memory differently than Windows &amp; Linux discrete GPUs. Our engine applies exact architecture-specific headroom caps.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon">🔒</div>
+          <h4>100% Client-Side &amp; Private</h4>
+          <p>No backend telemetry. No device fingerprint harvesting. All hardware discovery runs client-side inside your browser via WebGL shaders and memory APIs.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon">🎛</div>
+          <h4>Dynamic Quantization Math</h4>
+          <p>Switch between Q4_K_M, Q5, Q8, and FP16 with live recalculation. We factor in base parameter weights plus a 20% runtime buffer for KV-cache and context window tokens.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Filters -->
     <section class="fade-in" id="filters-section" style="display:none;">
       <!-- Ollama Helper Banner (Only when Ollama is offline) -->
@@ -1954,6 +2330,55 @@
 
     <!-- Models Grid -->
     <div class="models-grid" id="models-grid"></div>
+
+    <!-- How It Works Architecture Section -->
+    <section class="how-it-works-section fade-in" id="how-it-works-section">
+      <div class="section-title-center">
+        <span class="badge-mini">✦ UNDER THE HOOD</span>
+        <h3>How It Works</h3>
+        <p>A transparent 3-stage hardware evaluation algorithm that simulates runtime tensor memory before you pull a model.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-num">STAGE 01</span>
+          <h4>Client-Side Hardware Probe</h4>
+          <p>We query the browser's unmasked WebGL context (<code>WEBGL_debug_renderer_info</code>) to detect your GPU silicon, alongside logical CPU thread counts and approximate memory heap quotas with zero server requests.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-num">STAGE 02</span>
+          <h4>Architecture Headroom Modeling</h4>
+          <p>The engine allocates dynamic memory ceilings: reserving 2.5 GB for your operating system, allocating up to 75% wired memory on Apple Silicon, or reserving discrete VRAM for dedicated NVIDIA &amp; AMD graphics cards.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-num">STAGE 03</span>
+          <h4>Quantized Tensor Verification</h4>
+          <p>Model parameter weights are scaled by your chosen quantization precision (Q4, Q8, FP16) plus a 20% runtime buffer for token context windows, classifying models into <em>Can Run Smoothly</em>, <em>Tight Fit</em>, or <em>Too Heavy</em>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Supported Ecosystem Matrix -->
+    <section class="ecosystem-section fade-in" id="ecosystem-section">
+      <div class="section-title-center">
+        <span class="badge-mini">✦ RUNTIME COMPATIBILITY</span>
+        <h3>Supported AI Runtimes &amp; Frameworks</h3>
+        <p>CanIRunAI formulas are benchmarked against the world's most popular open-source local AI inference engines.</p>
+      </div>
+
+      <div class="ecosystem-pills">
+        <div class="ecosystem-pill">🦙 Ollama</div>
+        <div class="ecosystem-pill">⚡ llama.cpp</div>
+        <div class="ecosystem-pill">🎨 ComfyUI</div>
+        <div class="ecosystem-pill">🚀 vLLM</div>
+        <div class="ecosystem-pill">💻 LM Studio</div>
+        <div class="ecosystem-pill">🤖 Jan.ai</div>
+        <div class="ecosystem-pill">🤗 Hugging Face GGUF</div>
+        <div class="ecosystem-pill">🌌 Stable Diffusion</div>
+      </div>
+    </section>
 
     <!-- FAQ & Hardware Knowledge (SEO, GEO & AEO) -->
     <section class="faq-section" id="faq-section">
@@ -3626,7 +4051,129 @@
       });
     });
 
+    // ── Live Background (Interactive Neural Constellation) ────────
+    function initLiveBackground() {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let animationFrameId;
+      let particles = [];
+      const particleCount = window.innerWidth < 768 ? 24 : 50;
+      const maxDistance = 140;
+      let mouse = { x: null, y: null, radius: 150 };
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+      }
+
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }, { passive: true });
+
+      window.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+      }, { passive: true });
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.vx = (Math.random() - 0.5) * 0.4;
+          this.vy = (Math.random() - 0.5) * 0.4;
+          this.radius = Math.random() * 1.5 + 0.8;
+          const palette = [
+            'rgba(99, 102, 241, ',   // Indigo
+            'rgba(168, 85, 247, ',   // Violet
+            'rgba(45, 212, 191, ',   // Teal
+            'rgba(56, 189, 248, '    // Cyan
+          ];
+          this.color = palette[Math.floor(Math.random() * palette.length)];
+          this.alpha = Math.random() * 0.4 + 0.2;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0) this.x = width;
+          if (this.x > width) this.x = 0;
+          if (this.y < 0) this.y = height;
+          if (this.y > height) this.y = 0;
+
+          if (mouse.x !== null && mouse.y !== null) {
+            const dx = mouse.x - this.x;
+            const dy = mouse.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < mouse.radius) {
+              const force = (mouse.radius - dist) / mouse.radius;
+              this.x += (dx / dist) * force * 0.55;
+              this.y += (dy / dist) * force * 0.55;
+            }
+          }
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.color + this.alpha + ')';
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < maxDistance) {
+              const opacity = (1 - dist / maxDistance) * 0.22;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(165, 180, 252, ${opacity})`;
+              ctx.lineWidth = 0.75;
+              ctx.stroke();
+            }
+          }
+        }
+
+        animationFrameId = requestAnimationFrame(animate);
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          cancelAnimationFrame(animationFrameId);
+        } else {
+          animate();
+        }
+      });
+
+      animate();
+    }
+
     // ── Boot ──────────────────────────────────────────────────────
+    initLiveBackground();
     init();
   </script>
 </body>
